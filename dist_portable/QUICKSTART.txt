@@ -1,0 +1,62 @@
+================================================================================
+   Debtinst_s v1.0.0 - Institutional Fixed-Income & Gold Bond Analytics Terminal
+================================================================================
+
+Debtinst_s is designed to run on ANY computer with ZERO installation requirements.
+Choose any of the three options below depending on your machine environment:
+
+--------------------------------------------------------------------------------
+OPTION 1: One-Click Desktop Launcher (Recommended for Windows)
+--------------------------------------------------------------------------------
+Double-click:
+    Launch_Debtinst_Windows.bat
+
+What it does:
+  * Automatically detects whether a standalone executable (Debtinst_s.exe),
+    Python, or neither is installed on your computer.
+  * If Python or the .exe is present, launches the live local API server in
+    native desktop window mode.
+  * If the machine has NO Python and NO executable installed, it automatically
+    opens Debtinst_s_Standalone.html in Microsoft Edge / Google Chrome app mode!
+
+(For macOS / Linux users, run: ./Launch_Debtinst_Mac_Linux.sh)
+
+
+--------------------------------------------------------------------------------
+OPTION 2: Standalone Windows Executable (Debtinst_s.exe)
+--------------------------------------------------------------------------------
+If you downloaded or compiled Debtinst_s.exe:
+    Double-click Debtinst_s.exe
+
+  * Completely self-contained single-file binary with embedded SQLite database,
+    Newton-Raphson YTM engine, and local REST server.
+  * Requires NO Python installation.
+
+
+--------------------------------------------------------------------------------
+OPTION 3: 100% Zero-Install Offline HTML Bundle (Universal Air-Gapped Mode)
+--------------------------------------------------------------------------------
+Double-click:
+    Debtinst_s_Standalone.html
+
+  * Opens immediately in ANY web browser (Edge, Chrome, Safari, Firefox).
+  * 100% of CSS, native SVG charting, 36+ benchmark bond datasets, and
+    calculation logic are embedded directly in the single file.
+  * Runs completely offline with ZERO internet access, zero CDNs, and zero dependencies.
+
+
+--------------------------------------------------------------------------------
+HOW TO TEST DAILY BHAVCOPY CSV INGESTION:
+--------------------------------------------------------------------------------
+1. In the terminal header, click: "📂 Import Bhavcopy CSV"
+2. Choose the included sample file:
+   dist_portable/sample_bhavcopy_import.csv
+   (or copy-paste its contents into the text area).
+3. Click "Ingest & Update Database" to see the live quant metrics and RAYS scores
+   re-calculate instantly!
+
+
+================================================================================
+Project Repository & Source: https://github.com/suraajde/Debtinst_s.git
+Licensed under the MIT License.
+================================================================================

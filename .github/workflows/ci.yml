@@ -48,6 +48,18 @@ jobs:
         run: |
           python src/app_server.py --smoke-test
 
+      - name: Run main entrypoint smoke test
+        run: |
+          python main.py --smoke-test
+
+      - name: Run distribution builder without PyInstaller
+        run: |
+          python build_exe.py --no-exe
+
+      - name: Verify distribution zip integrity
+        run: |
+          python build_exe.py --verify
+
       - name: Run full unit test suite
         run: |
           python -m unittest discover tests -v

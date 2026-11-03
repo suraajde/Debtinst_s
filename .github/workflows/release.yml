@@ -1,0 +1,121 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  test-suite:
+    name: Multi-OS Verification (${{ matrix.os }} - Python ${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.10', '3.11', '3.12', '3.13']
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Run embedded database verification
+        run: |
+          python src/embedded_seed.py
+
+      - name: Run market data engine verification
+        run: |
+          python src/data_engine.py
+
+      - name: Run quantitative engine verification
+        run: |
+          python src/quant_engine.py
+
+      - name: Run main entrypoint smoke test
+        run: |
+          python main.py --smoke-test
+
+      - name: Run distribution builder without PyInstaller
+        run: |
+          python build_exe.py --no-exe
+
+      - name: Verify distribution zip integrity
+        run: |
+          python build_exe.py --verify
+
+      - name: Run full unit test suite
+        run: |
+          python -m unittest discover tests -v
+
+  build-and-release:
+    name: Build Windows EXE & Portable Release Bundle
+    needs: test-suite
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install PyInstaller for standalone compilation
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+
+      - name: Build standalone EXE and portable ZIP distribution
+        run: |
+          python build_exe.py
+
+      - name: Verify compiled distribution
+        run: |
+          python build_exe.py --verify
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Debtinst_s-Windows-Portable-v1.0.0
+          path: |
+            dist_portable/Debtinst_s_Portable_v1.0.0.zip
+            dist_portable/Debtinst_s_Standalone.html
+            dist_portable/Debtinst_s.exe
+          if-no-files-found: warn
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist_portable/Debtinst_s_Portable_v1.0.0.zip
+            dist_portable/Debtinst_s_Standalone.html
+            dist_portable/Debtinst_s.exe
+          name: "Debtinst_s ${{ github.ref_name }} - Zero-Dependency Fixed-Income Terminal"
+          body: |
+            ## Debtinst_s v1.0.0 - Production Release
+
+            Zero-Dependency Indian Fixed-Income & Debt Securities Intelligence Terminal.
+            Isolating high-return, manageable-risk opportunities across G-Secs, T-Bills, Corporate NCDs, SGBs, and Target Maturity Debt ETFs.
+
+            ### Included Distribution Artifacts
+            - **`Debtinst_s_Portable_v1.0.0.zip`**: Complete offline-ready portable distribution with launchers and standalone HTML dashboard.
+            - **`Debtinst_s.exe`**: Native Windows single-file executable (no Python installation required).
+            - **`Debtinst_s_Standalone.html`**: Zero-CDN universal interactive dashboard (works in any browser without Python or internet).
+
+            ### Quick Start
+            - **Windows**: Unzip `Debtinst_s_Portable_v1.0.0.zip` and double-click `Launch_Debtinst_Windows.bat` or `Debtinst_s.exe`.
+            - **macOS / Linux**: Unzip and execute `./Launch_Debtinst_Mac_Linux.sh`.
+            - **Air-Gapped / Browser-Only**: Double-click `Debtinst_s_Standalone.html`.
+          draft: false
+          prerelease: false
+          fail_on_unmatched_files: false

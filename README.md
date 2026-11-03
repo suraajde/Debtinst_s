@@ -5,7 +5,7 @@
 [![CI](https://github.com/suraajde/Debtinst_s/actions/workflows/ci.yml/badge.svg)](https://github.com/suraajde/Debtinst_s/actions/workflows/ci.yml)
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
 [![Dependencies](https://img.shields.io/badge/dependencies-zero%20external-brightgreen.svg)](#zero-dependency-execution)
-[![Release](https://img.shields.io/badge/release-v0.4.0--ui-blue.svg)](https://github.com/suraajde/Debtinst_s/releases)
+[![Release](https://img.shields.io/badge/release-v1.0.0--release-blue.svg)](https://github.com/suraajde/Debtinst_s/releases)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 ---
@@ -44,35 +44,50 @@ Fixed-income investors in Indian capital markets face a fundamental dilemma:
 | **Sprint 2** | **Free-API Live Data & Bhavcopy Ingestion Engine** | <ul><li>Browser-grade NSE cookie session manager (`_create_nse_opener`)</li><li>Live NSE endpoints for SGBs, G-Secs, and Corporate NCDs</li><li>Live 24K Gold benchmark derivation via Yahoo Finance (GOLDBEES)</li><li>Flexible CSV Bhavcopy offline import engine (`import_bhavcopy_csv`)</li><li>Non-destructive schema migration (`current_price`, `traded_volume`, `market_sync_log`)</li><li>Comprehensive mock test suite (`tests/test_data_engine.py`)</li></ul> | **Completed** ✅<br>`v0.2.0-data` |
 | **Sprint 3** | **Quantitative Pricing, Sovereign Curve & Risk Engine** | <ul><li>Exact Newton-Raphson & Bisection YTM solver across coupon frequencies</li><li>SGB Gold-parity valuation, discount-to-spot, & expected gold CAGR</li><li>Dynamic piecewise-linear Sovereign Yield Curve & Credit Spread (bps)</li><li>Macaulay Duration, Modified Duration, Convexity, & +100 bps rate shock</li><li>Yield-Trap Guardrail ($R_w, S_w, A_m$) & RAYS scoring model</li><li>Multi-criteria high-return manageable-risk screener</li><li>12-Month Calendar Cash-Flow & Coupon Ladder Simulator</li><li>Quantitative test suite with 16 tests (`tests/test_quant_engine.py`)</li></ul> | **Completed** ✅<br>`v0.3.0-quant` |
 | **Sprint 4** | **Zero-Dependency Interactive Dashboard & Local Server** | <ul><li>Zero-CDN institutional dark/light fixed-income terminal UI ([`src/ui_template.py`](file:///d:/Debtinst_s/src/ui_template.py))</li><li>Local HTTP server & API endpoints ([`src/app_server.py`](file:///d:/Debtinst_s/src/app_server.py))</li><li>Interactive SVG scatter chart: Debt Efficient Frontier (Risk vs. YTM)</li><li>Interactive SVG curve chart: Sovereign Yield Curve & Spreads</li><li>12-Month interactive cash-flow bar chart & unit allocation simulator</li><li>Pre-baked single-file offline portable bundle ([`dist_portable/Debtinst_s_Standalone.html`](file:///d:/Debtinst_s/dist_portable/Debtinst_s_Standalone.html))</li><li>Automated HTTP server test suite with 11 tests (`tests/test_app_server.py`)</li></ul> | **Completed** ✅<br>`v0.4.0-ui` |
-| **Sprint 5** | **Terminal UI, Final Packaging & Barbell Optimization** | <ul><li>Curses / ANSI interactive terminal dashboard (zero 3P dependencies)</li><li>Export engines (CSV, JSON, Markdown portfolio reports)</li><li>Automated Barbell Portfolio Optimizer & Risk Guardrail reports</li><li>Final cross-platform distribution package</li></ul> | *Next* ⏳ |
+| **Sprint 5** | **Portable Distribution, Smart Launchers & Release Pipeline** | <ul><li>Unified desktop entrypoint ([`main.py`](file:///d:/Debtinst_s/main.py)) with standard & frozen (`sys._MEIPASS`) path resolution</li><li>Cross-platform zero-dependency launchers: Windows batch & Mac/Linux shell</li><li>Distribution builder ([`build_exe.py`](file:///d:/Debtinst_s/build_exe.py)) and portable zip archive (`Debtinst_s_Portable_v1.0.0.zip`)</li><li>Sample institutional Bhavcopy import CSV & Quickstart guide</li><li>Automated multi-OS GitHub Release pipeline ([`.github/workflows/release.yml`](file:///d:/Debtinst_s/.github/workflows/release.yml))</li><li>Packaging verification test suite with 11 tests ([`tests/test_packaging.py`](file:///d:/Debtinst_s/tests/test_packaging.py))</li></ul> | **Completed** ✅<br>`v1.0.0-release` |
 
 ---
 
 ## 💻 Launching the Dashboard
 
-### Option A: Local Interactive Server (Recommended)
-Run the built-in HTTP server to access dynamic live free API sync, Bhavcopy CSV imports, and chromeless desktop application mode:
+### Option 1: Unified Desktop Entrypoint (Recommended)
+Run the top-level application runner `main.py` to launch the local live server in native desktop window mode:
 
 ```bash
-# Launch interactive terminal server (automatically opens your browser in app mode)
-python -m src.app_server
+# Launch interactive terminal server and desktop window
+python main.py
 
-# Or customize host and port:
-python -m src.app_server --port 8765 --host 127.0.0.1
+# Or run with CLI options:
+python main.py --port 8765 --host 127.0.0.1
+python main.py --smoke-test           # Complete automated self-check
+python main.py --export-standalone    # Re-export dist_portable/Debtinst_s_Standalone.html
+python main.py --no-browser           # Start HTTP server without opening browser
 ```
 
-*CLI Options:*
-* `--port <p>`: Port to bind (default: `8765`).
-* `--host <h>`: Interface to bind (default: `127.0.0.1`).
-* `--export-standalone`: Re-exports `dist_portable/Debtinst_s_Standalone.html` and exits.
-* `--smoke-test`: Executes automated self-test on an ephemeral port and exits.
-* `--no-browser`: Starts server without opening the desktop browser window.
+### Option 2: Smart Cross-Platform Launchers (Portable Bundle)
+The [`dist_portable/`](file:///d:/Debtinst_s/dist_portable/) directory and [`Debtinst_s_Portable_v1.0.0.zip`](file:///d:/Debtinst_s/dist_portable/Debtinst_s_Portable_v1.0.0.zip) provide instant one-click launchers with intelligent 3-tier fallback (Compiled Executable -> Python Local Server -> Microsoft Edge / Google Chrome app mode):
 
-### Option B: 100% Zero-Install Offline Portable Bundle
-Simply double-click or open [`dist_portable/Debtinst_s_Standalone.html`](file:///d:/Debtinst_s/dist_portable/Debtinst_s_Standalone.html) in any modern browser (**Edge**, **Chrome**, **Safari**, **Firefox**):
+* **On Windows**: Double-click `Launch_Debtinst_Windows.bat` (or `Debtinst_s.exe` if compiled).
+* **On macOS / Linux**: In terminal, run `./Launch_Debtinst_Mac_Linux.sh`.
+
+### Option 3: 100% Zero-Install Offline Portable HTML Bundle
+Simply double-click or open [`dist_portable/Debtinst_s_Standalone.html`](file:///d:/Debtinst_s/dist_portable/Debtinst_s_Standalone.html) directly in any modern browser (**Edge**, **Chrome**, **Safari**, **Firefox**):
 * **Zero Installation**: No Python, no node, no virtual environments needed.
 * **Air-Gapped Operation**: 100% of HTML, CSS, SVG charting, and JavaScript calculations are embedded inline.
 * **Client-Side Simulation**: Interactive sliders, rating filters, risk guardrails, and 12-month ladder simulations compute instantaneously in browser memory.
+
+### Building the Portable Archive Locally
+To generate the portable distribution archive or compile `Debtinst_s.exe` (if PyInstaller is installed):
+```bash
+# Generate dist_portable/Debtinst_s_Portable_v1.0.0.zip and compile EXE if PyInstaller is present
+python build_exe.py
+
+# Or package zip without compiling executable:
+python build_exe.py --no-exe
+
+# Verify distribution zip integrity:
+python build_exe.py --verify
+```
 
 ---
 
@@ -151,8 +166,8 @@ pie title Benchmark Debt Securities by Asset Class
 python src/embedded_seed.py
 ```
 
-### 2. Run the Full Test Suite (52 Tests across 4 Test Suites)
-Validate database creation, live ingestion mocks, gold price derivation, Bhavcopy CSV imports, YTM calculations, duration/convexity, yield-trap guardrails, cash-flow ladders, and HTTP API routes:
+### 2. Run the Full Test Suite (63 Tests across 5 Test Suites)
+Validate database creation, live ingestion mocks, gold price derivation, Bhavcopy CSV imports, YTM calculations, duration/convexity, yield-trap guardrails, cash-flow ladders, HTTP API routes, runtime path resolution, and distribution packaging:
 
 ```bash
 python -m unittest discover tests -v
@@ -160,7 +175,7 @@ python -m unittest discover tests -v
 
 *Output:*
 ```text
-Ran 52 tests in 3.142s
+Ran 63 tests in 3.412s
 OK
 ```
 
@@ -172,29 +187,38 @@ OK
 Debtinst_s/
 ├── .github/
 │   └── workflows/
-│       └── ci.yml             # Multi-OS CI testing Python 3.10 - 3.13 without pip dependencies
+│       ├── ci.yml                    # Multi-OS CI testing Python 3.10 - 3.13 without pip dependencies
+│       └── release.yml               # Automated release pipeline building Windows EXE & Portable ZIP
 ├── data/
-│   ├── .gitkeep              # Directory tracked; SQLite DB materialized at runtime
-│   └── debt_securities.db    # Auto-materialized local SQLite database
+│   ├── .gitkeep                     # Directory tracked; SQLite DB materialized at runtime
+│   └── debt_securities.db           # Auto-materialized local SQLite database
 ├── dist_portable/
-│   ├── .gitkeep              # Destination for zero-install portable deployment bundles
-│   └── Debtinst_s_Standalone.html # 100% offline self-contained interactive dashboard (104 KB)
+│   ├── .gitkeep                     # Destination for zero-install portable deployment bundles
+│   ├── Debtinst_s_Portable_v1.0.0.zip # Complete distribution bundle archive (67 KB)
+│   ├── Debtinst_s_Standalone.html   # 100% offline self-contained interactive dashboard (104 KB)
+│   ├── Launch_Debtinst_Windows.bat  # 1-click Windows smart launcher (EXE -> Python -> Edge App)
+│   ├── Launch_Debtinst_Mac_Linux.sh # 1-click macOS / Linux smart launcher
+│   ├── sample_bhavcopy_import.csv   # Sample institutional Bhavcopy CSV for offline testing
+│   └── QUICKSTART.txt               # Plain-text quick start guide for non-technical users
 ├── src/
-│   ├── __init__.py           # Package initialization & version metadata (v0.4.0)
-│   ├── embedded_seed.py      # Embedded 36-security dataset & SQLite auto-materializer
-│   ├── data_engine.py        # Free-API Live Ingestion, Bhavcopy CSV, & Gold Derivation
-│   ├── quant_engine.py       # Newton-Raphson YTM, Sovereign Curve, RAYS & Ladder Engine
-│   ├── ui_template.py        # Zero-CDN Institutional Terminal UI & SVG Chart Generator
-│   └── app_server.py         # Local HTTP Server, REST APIs, & Desktop App Launcher
+│   ├── __init__.py                  # Package initialization & version metadata (v1.0.0)
+│   ├── embedded_seed.py             # Embedded 36-security dataset & SQLite auto-materializer
+│   ├── data_engine.py               # Free-API Live Ingestion, Bhavcopy CSV, & Gold Derivation
+│   ├── quant_engine.py              # Newton-Raphson YTM, Sovereign Curve, RAYS & Ladder Engine
+│   ├── ui_template.py               # Zero-CDN Institutional Terminal UI & SVG Chart Generator
+│   └── app_server.py                # Local HTTP Server, REST APIs, & Desktop App Launcher
 ├── tests/
-│   ├── __init__.py           # Test package initialization
-│   ├── test_embedded_seed.py # Seed integrity & SQLite materialization tests (12 tests)
-│   ├── test_data_engine.py   # Live ingestion, mock endpoints, CSV import & fallback tests (13 tests)
-│   ├── test_quant_engine.py  # Pricing, YTM, SGB parity, RAYS & ladder tests (16 tests)
-│   └── test_app_server.py    # Local HTTP server, REST routes & standalone export tests (11 tests)
-├── .gitignore                # Excludes caches, builds, environments, and local DBs
-├── LICENSE                   # MIT License
-└── README.md                 # Project vision, roadmap, mathematical model, and dashboard guide
+│   ├── __init__.py                  # Test package initialization
+│   ├── test_embedded_seed.py        # Seed integrity & SQLite materialization tests (12 tests)
+│   ├── test_data_engine.py          # Live ingestion, mock endpoints, CSV import & fallback tests (13 tests)
+│   ├── test_quant_engine.py         # Pricing, YTM, SGB parity, RAYS & ladder tests (16 tests)
+│   ├── test_app_server.py           # Local HTTP server, REST routes & standalone export tests (11 tests)
+│   └── test_packaging.py            # Packaging, launchers, runtime paths & distribution tests (11 tests)
+├── build_exe.py                     # Zero-dependency portable distribution & executable builder
+├── main.py                          # Unified cross-platform desktop application entrypoint & CLI
+├── .gitignore                       # Excludes caches, builds, environments, and local DBs
+├── LICENSE                          # MIT License
+└── README.md                        # Project vision, roadmap, mathematical model, and user guide
 ```
 
 ---
