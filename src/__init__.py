@@ -1,7 +1,7 @@
 """
 Debtinst_s - Zero-Dependency Debt Securities Analytics & Portfolio Engine.
-Sprint 2: Zero-Dependency Free-API Live Data & Bhavcopy Ingestion Engine.
+Sprint 3: Quantitative Pricing, Sovereign Curve, Risk Guardrail & Cash-Flow Ladder Engine.
 """
 
-__version__ = "0.2.0"
-__sprint__ = "Sprint 2"
+__version__ = "0.3.0"
+__sprint__ = "Sprint 3"

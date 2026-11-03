@@ -40,6 +40,10 @@ jobs:
         run: |
           python src/data_engine.py
 
+      - name: Run quantitative engine verification
+        run: |
+          python src/quant_engine.py
+
       - name: Run unit tests
         run: |
           python -m unittest discover tests -v
