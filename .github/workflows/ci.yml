@@ -44,6 +44,10 @@ jobs:
         run: |
           python src/quant_engine.py
 
-      - name: Run unit tests
+      - name: Run dashboard server smoke test and standalone export
+        run: |
+          python src/app_server.py --smoke-test
+
+      - name: Run full unit test suite
         run: |
           python -m unittest discover tests -v

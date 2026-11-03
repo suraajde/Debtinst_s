@@ -5,7 +5,7 @@
 [![CI](https://github.com/suraajde/Debtinst_s/actions/workflows/ci.yml/badge.svg)](https://github.com/suraajde/Debtinst_s/actions/workflows/ci.yml)
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
 [![Dependencies](https://img.shields.io/badge/dependencies-zero%20external-brightgreen.svg)](#zero-dependency-execution)
-[![Release](https://img.shields.io/badge/release-v0.3.0--quant-blue.svg)](https://github.com/suraajde/Debtinst_s/releases)
+[![Release](https://img.shields.io/badge/release-v0.4.0--ui-blue.svg)](https://github.com/suraajde/Debtinst_s/releases)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 ---
@@ -27,11 +27,12 @@ Fixed-income investors in Indian capital markets face a fundamental dilemma:
 `Debtinst_s` is engineered under a strict zero-dependency architectural mandate:
 
 * **Universal Portability**: Runs on **any** computer with standard Python 3 (Python 3.8+) without running `pip install` or downloading third-party packages.
-* **Pure Standard Library Math**: Bond pricing, Newton-Raphson solvers, yield curve interpolation, duration, convexity, and portfolio ladders are implemented entirely using Python's `math`, `statistics`, and `datetime` (no `numpy`, `scipy`, or `pandas`).
-* **Self-Contained Seed Data**: All baseline benchmark datasets (36+ institutional securities across 4 asset classes) are embedded directly in [`src/embedded_seed.py`](file:///d:/Debtinst_s/src/embedded_seed.py).
-* **Live Free-API Ingestion Engine**: Built purely using Python's standard `urllib.request` and `http.cookiejar`, connecting directly to free public market feeds (NSE India and Yahoo Finance) without paid API keys.
-* **Auto-Materializing SQLite Engine**: At runtime, the database engine automatically materializes the embedded dataset into a high-performance local SQLite database ([`data/debt_securities.db`](file:///d:/Debtinst_s/data/debt_securities.db)) using only Python's built-in `sqlite3` standard library.
-* **Zero Network Reliance**: Functions 100% offline in air-gapped, institutional, or CI runner environments through deterministic fallbacks.
+* **Pure Standard Library Math & HTTP**: Bond pricing, Newton-Raphson solvers, yield curve interpolation, duration, convexity, and the local HTTP API server are implemented entirely using standard library Python (`math`, `http.server`, `socketserver`, `sqlite3`, `json`).
+* **Zero External CDN Dependencies**: The interactive UI uses 100% inline CSS, native SVG charting, and vanilla JavaScript. No external Tailwind, Bootstrap, Plotly, or Google Fonts. Works flawlessly in air-gapped environments.
+* **Dual-Mode Interactive Dashboard**:
+  1. *Connected Server Mode:* Run `python -m src.app_server` to launch a local dashboard with live free APIs, Bhavcopy CSV ingestion, and instant re-calculation.
+  2. *Single-File Portable Mode:* Double-click [`dist_portable/Debtinst_s_Standalone.html`](file:///d:/Debtinst_s/dist_portable/Debtinst_s_Standalone.html) to open the dashboard directly in any browser on any computer without Python installed!
+* **Self-Contained Seed Data**: 36+ institutional benchmark securities across 4 asset classes embedded in [`src/embedded_seed.py`](file:///d:/Debtinst_s/src/embedded_seed.py).
 
 ---
 
@@ -42,8 +43,36 @@ Fixed-income investors in Indian capital markets face a fundamental dilemma:
 | **Sprint 1** | **Architecture & Embedded Offline Database** | <ul><li>Zero-dependency project layout (`src/`, `data/`, `tests/`, `dist_portable/`)</li><li>Comprehensive embedded seed dataset of 36+ benchmark bonds</li><li>SQLite auto-materialization schema with performance indexes</li><li>Standard library unit test suite (`tests/test_embedded_seed.py`)</li><li>Automated multi-OS CI workflow</li></ul> | **Completed** ✅<br>`v0.1.0-init` |
 | **Sprint 2** | **Free-API Live Data & Bhavcopy Ingestion Engine** | <ul><li>Browser-grade NSE cookie session manager (`_create_nse_opener`)</li><li>Live NSE endpoints for SGBs, G-Secs, and Corporate NCDs</li><li>Live 24K Gold benchmark derivation via Yahoo Finance (GOLDBEES)</li><li>Flexible CSV Bhavcopy offline import engine (`import_bhavcopy_csv`)</li><li>Non-destructive schema migration (`current_price`, `traded_volume`, `market_sync_log`)</li><li>Comprehensive mock test suite (`tests/test_data_engine.py`)</li></ul> | **Completed** ✅<br>`v0.2.0-data` |
 | **Sprint 3** | **Quantitative Pricing, Sovereign Curve & Risk Engine** | <ul><li>Exact Newton-Raphson & Bisection YTM solver across coupon frequencies</li><li>SGB Gold-parity valuation, discount-to-spot, & expected gold CAGR</li><li>Dynamic piecewise-linear Sovereign Yield Curve & Credit Spread (bps)</li><li>Macaulay Duration, Modified Duration, Convexity, & +100 bps rate shock</li><li>Yield-Trap Guardrail ($R_w, S_w, A_m$) & RAYS scoring model</li><li>Multi-criteria high-return manageable-risk screener</li><li>12-Month Calendar Cash-Flow & Coupon Ladder Simulator</li><li>Quantitative test suite with 16 tests (`tests/test_quant_engine.py`)</li></ul> | **Completed** ✅<br>`v0.3.0-quant` |
-| **Sprint 4** | **Portfolio Allocation & Manageable-Risk Optimizer** | <ul><li>Multi-asset barbell strategy (G-Sec/SGB + Senior Secured NCDs)</li><li>Duration matching and liquidity laddering</li><li>Rebalancing recommendations and concentration limit guards</li><li>Scenario analysis (interest rate shocks: $+100\text{ bps}$, $-100\text{ bps}$)</li></ul> | *Next* ⏳ |
-| **Sprint 5** | **Interactive Terminal UI & Portable Distribution** | <ul><li>Curses / ANSI interactive terminal dashboard (zero 3P dependencies)</li><li>Export engines (CSV, JSON, Markdown portfolio reports)</li><li>Portable self-contained bundle in `dist_portable/`</li><li>One-click launcher for Windows, Linux, and macOS</li></ul> | *Planned* 📅 |
+| **Sprint 4** | **Zero-Dependency Interactive Dashboard & Local Server** | <ul><li>Zero-CDN institutional dark/light fixed-income terminal UI ([`src/ui_template.py`](file:///d:/Debtinst_s/src/ui_template.py))</li><li>Local HTTP server & API endpoints ([`src/app_server.py`](file:///d:/Debtinst_s/src/app_server.py))</li><li>Interactive SVG scatter chart: Debt Efficient Frontier (Risk vs. YTM)</li><li>Interactive SVG curve chart: Sovereign Yield Curve & Spreads</li><li>12-Month interactive cash-flow bar chart & unit allocation simulator</li><li>Pre-baked single-file offline portable bundle ([`dist_portable/Debtinst_s_Standalone.html`](file:///d:/Debtinst_s/dist_portable/Debtinst_s_Standalone.html))</li><li>Automated HTTP server test suite with 11 tests (`tests/test_app_server.py`)</li></ul> | **Completed** ✅<br>`v0.4.0-ui` |
+| **Sprint 5** | **Terminal UI, Final Packaging & Barbell Optimization** | <ul><li>Curses / ANSI interactive terminal dashboard (zero 3P dependencies)</li><li>Export engines (CSV, JSON, Markdown portfolio reports)</li><li>Automated Barbell Portfolio Optimizer & Risk Guardrail reports</li><li>Final cross-platform distribution package</li></ul> | *Next* ⏳ |
+
+---
+
+## 💻 Launching the Dashboard
+
+### Option A: Local Interactive Server (Recommended)
+Run the built-in HTTP server to access dynamic live free API sync, Bhavcopy CSV imports, and chromeless desktop application mode:
+
+```bash
+# Launch interactive terminal server (automatically opens your browser in app mode)
+python -m src.app_server
+
+# Or customize host and port:
+python -m src.app_server --port 8765 --host 127.0.0.1
+```
+
+*CLI Options:*
+* `--port <p>`: Port to bind (default: `8765`).
+* `--host <h>`: Interface to bind (default: `127.0.0.1`).
+* `--export-standalone`: Re-exports `dist_portable/Debtinst_s_Standalone.html` and exits.
+* `--smoke-test`: Executes automated self-test on an ephemeral port and exits.
+* `--no-browser`: Starts server without opening the desktop browser window.
+
+### Option B: 100% Zero-Install Offline Portable Bundle
+Simply double-click or open [`dist_portable/Debtinst_s_Standalone.html`](file:///d:/Debtinst_s/dist_portable/Debtinst_s_Standalone.html) in any modern browser (**Edge**, **Chrome**, **Safari**, **Firefox**):
+* **Zero Installation**: No Python, no node, no virtual environments needed.
+* **Air-Gapped Operation**: 100% of HTML, CSS, SVG charting, and JavaScript calculations are embedded inline.
+* **Client-Side Simulation**: Interactive sliders, rating filters, risk guardrails, and 12-month ladder simulations compute instantaneously in browser memory.
 
 ---
 
@@ -122,8 +151,8 @@ pie title Benchmark Debt Securities by Asset Class
 python src/embedded_seed.py
 ```
 
-### 2. Run the Full Test Suite (41 Tests across 3 Test Suites)
-Validate database creation, live ingestion mocks, gold price derivation, Bhavcopy CSV imports, YTM calculations, duration/convexity, yield-trap guardrails, and cash-flow ladders:
+### 2. Run the Full Test Suite (52 Tests across 4 Test Suites)
+Validate database creation, live ingestion mocks, gold price derivation, Bhavcopy CSV imports, YTM calculations, duration/convexity, yield-trap guardrails, cash-flow ladders, and HTTP API routes:
 
 ```bash
 python -m unittest discover tests -v
@@ -131,57 +160,8 @@ python -m unittest discover tests -v
 
 *Output:*
 ```text
-Ran 41 tests in 5.176s
+Ran 52 tests in 3.142s
 OK
-```
-
-### 3. Quantitative Engine Usage (`src/quant_engine.py`)
-
-#### Screen High-Return, Manageable-Risk Debt Securities
-```python
-from src.quant_engine import BondQuantEngine
-
-quant = BondQuantEngine()
-
-# Screen bonds with rating >= AA, asset cover >= 1.25x, excluding yield traps
-screened_bonds = quant.screen_securities(
-    min_rating="AA",
-    min_asset_cover=1.25,
-    exclude_yield_traps=True,
-)
-
-print(f"Discovered {len(screened_bonds)} qualifying high-quality bonds:")
-for b in screened_bonds[:5]:
-    print(
-        f"{b['symbol']:12} | {b['category']:14} | Rating: {b['rating']:10} "
-        f"| YTM: {b['effective_ytm']:.2f}% | D_mod: {b['modified_duration']:.2f}y "
-        f"| Spread: {b['spread_over_gsec_bps']:+4.0f} bps | RAYS: {b['rays_score']:.2f}"
-    )
-```
-
-#### Simulate a 12-Month Portfolio Cash-Flow Ladder
-```python
-from src.quant_engine import BondQuantEngine
-
-quant = BondQuantEngine()
-screened = quant.screen_securities(min_rating="AAA", min_asset_cover=1.25)
-
-# Allocate INR 5,00,000 using RAYS-weighting across top bonds
-ladder_report = quant.generate_cashflow_ladder(
-    securities=screened[:5],
-    total_capital_inr=500000.0,
-    allocation_mode="rays_weighted",
-)
-
-print(f"Portfolio Weighted YTM:      {ladder_report['weighted_effective_ytm']}%")
-print(f"Portfolio Duration:          {ladder_report['weighted_modified_duration']} years")
-print(f"Sovereign & Senior Secured:  {ladder_report['sovereign_and_senior_secured_pct']}%")
-print(f"Annual Coupon Cash Inflow:   INR {ladder_report['total_annual_coupon_inflow']:,.2f}")
-
-# Inspect monthly coupon payouts
-for month, flow in ladder_report["monthly_schedule"].items():
-    if flow["coupon"] > 0:
-        print(f"  * {month}: Coupon INR {flow['coupon']:,.2f}")
 ```
 
 ---
@@ -197,20 +177,24 @@ Debtinst_s/
 │   ├── .gitkeep              # Directory tracked; SQLite DB materialized at runtime
 │   └── debt_securities.db    # Auto-materialized local SQLite database
 ├── dist_portable/
-│   └── .gitkeep              # Destination for zero-install portable deployment bundles
+│   ├── .gitkeep              # Destination for zero-install portable deployment bundles
+│   └── Debtinst_s_Standalone.html # 100% offline self-contained interactive dashboard (104 KB)
 ├── src/
-│   ├── __init__.py           # Package initialization & version metadata (v0.3.0)
+│   ├── __init__.py           # Package initialization & version metadata (v0.4.0)
 │   ├── embedded_seed.py      # Embedded 36-security dataset & SQLite auto-materializer
 │   ├── data_engine.py        # Free-API Live Ingestion, Bhavcopy CSV, & Gold Derivation
-│   └── quant_engine.py       # Newton-Raphson YTM, Sovereign Curve, RAYS & Ladder Engine
+│   ├── quant_engine.py       # Newton-Raphson YTM, Sovereign Curve, RAYS & Ladder Engine
+│   ├── ui_template.py        # Zero-CDN Institutional Terminal UI & SVG Chart Generator
+│   └── app_server.py         # Local HTTP Server, REST APIs, & Desktop App Launcher
 ├── tests/
 │   ├── __init__.py           # Test package initialization
 │   ├── test_embedded_seed.py # Seed integrity & SQLite materialization tests (12 tests)
 │   ├── test_data_engine.py   # Live ingestion, mock endpoints, CSV import & fallback tests (13 tests)
-│   └── test_quant_engine.py  # Pricing, YTM, SGB parity, RAYS & ladder tests (16 tests)
+│   ├── test_quant_engine.py  # Pricing, YTM, SGB parity, RAYS & ladder tests (16 tests)
+│   └── test_app_server.py    # Local HTTP server, REST routes & standalone export tests (11 tests)
 ├── .gitignore                # Excludes caches, builds, environments, and local DBs
 ├── LICENSE                   # MIT License
-└── README.md                 # Project vision, roadmap, and quantitative model guide
+└── README.md                 # Project vision, roadmap, mathematical model, and dashboard guide
 ```
 
 ---

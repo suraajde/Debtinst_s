@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debtinst_s | Institutional Fixed-Income & Gold Bond Terminal</title>
+  <style>
+    :root {
+      --bg-base: #090d16;
+      --bg-surface: #111827;
+      --bg-card: #1f2937;
+      --bg-card-hover: #283548;
+      --border: #374151;
+      --border-focus: #3b82f6;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+      --accent-blue: #38bdf8;
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --accent-gold: #fbbf24;
+      --accent-purple: #a855f7;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    [data-theme="light"] {
+      --bg-base: #f3f4f6;
+      --bg-surface: #ffffff;
+      --bg-card: #f9fafb;
+      --bg-card-hover: #f3f4f6;
+      --border: #e5e7eb;
+      --border-focus: #2563eb;
+      --text-main: #111827;
+      --text-muted: #4b5563;
+      --text-dim: #9ca3af;
+      --accent-blue: #0284c7;
+      --accent-green: #059669;
+      --accent-amber: #d97706;
+      --accent-rose: #e11d48;
+      --accent-gold: #d97706;
+      --accent-purple: #7c3aed;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      line-height: 1.5;
+      font-size: 14px;
+      overflow-x: hidden;
+    }
+
+    /* Top Navigation Header */
+    header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #ffffff;
+      font-size: 16px;
+    }
+    .brand-title h1 {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .brand-title p {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      border: 1px solid transparent;
+    }
+    .badge-live { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border-color: rgba(16, 185, 129, 0.3); }
+    .badge-offline { background: rgba(56, 189, 248, 0.15); color: var(--accent-blue); border-color: rgba(56, 189, 248, 0.3); }
+    .badge-guard { background: rgba(244, 63, 94, 0.15); color: var(--accent-rose); border-color: rgba(244, 63, 94, 0.3); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+    .btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-focus);
+    }
+    .btn-primary {
+      background: #2563eb;
+      color: #ffffff;
+      border-color: #1d4ed8;
+    }
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+
+    /* Executive KPI Ribbon */
+    .kpi-ribbon {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      padding: 16px 24px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .kpi-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+    .kpi-value {
+      font-size: 20px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      letter-spacing: -0.02em;
+    }
+    .kpi-subtext {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    /* Main Terminal Layout */
+    .terminal-container {
+      display: grid;
+      grid-template-columns: 310px 1fr;
+      min-height: calc(100vh - 145px);
+    }
+
+    /* Left Sidebar Controls */
+    .sidebar {
+      background: var(--bg-surface);
+      border-right: 1px solid var(--border);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+    }
+    .filter-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .filter-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+    }
+    .checkbox-label input[type="checkbox"] {
+      accent-color: #2563eb;
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+    }
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .slider-header span:last-child {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--accent-blue);
+    }
+    input[type="range"] {
+      width: 100%;
+      accent-color: #2563eb;
+      cursor: pointer;
+    }
+    select {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: var(--font-family);
+      width: 100%;
+      cursor: pointer;
+    }
+    select:focus {
+      border-color: var(--border-focus);
+      outline: none;
+    }
+
+    /* Main Content Area */
+    .main-workspace {
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      overflow-x: hidden;
+    }
+
+    /* Charts Row */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 1100px) {
+      .terminal-container { grid-template-columns: 1fr; }
+      .charts-row { grid-template-columns: 1fr; }
+    }
+    .chart-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .chart-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .chart-legend {
+      display: flex;
+      gap: 12px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .chart-svg-container {
+      width: 100%;
+      height: 260px;
+      position: relative;
+    }
+    svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    /* Table Panel */
+    .table-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .table-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .search-input {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      width: 280px;
+    }
+    .search-input:focus {
+      border-color: var(--border-focus);
+      outline: none;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      max-height: 480px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+    }
+    th {
+      background: var(--bg-card);
+      color: var(--text-muted);
+      font-weight: 600;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    th:hover {
+      color: var(--text-main);
+    }
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+    tr:hover td {
+      background: var(--bg-card);
+    }
+    .col-text { font-family: var(--font-family); }
+
+    /* Cash Flow Ladder Section */
+    .ladder-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .ladder-controls {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+      background: var(--bg-card);
+      padding: 14px 16px;
+      border-radius: 8px;
+    }
+    .ladder-metric {
+      display: flex;
+      flex-direction: column;
+    }
+    .ladder-metric span:first-child {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .ladder-metric span:last-child {
+      font-size: 16px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--accent-green);
+    }
+
+    /* Tooltip */
+    #tooltip {
+      position: absolute;
+      background: #0f172a;
+      color: #ffffff;
+      border: 1px solid #334155;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      pointer-events: none;
+      display: none;
+      z-index: 200;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Modal for Bhavcopy import */
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      width: 520px;
+      max-width: 90%;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    textarea.csv-area {
+      width: 100%;
+      height: 160px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 10px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      border-radius: 6px;
+      resize: vertical;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo">₹</div>
+      <div class="brand-title">
+        <h1>Debtinst_s Terminal</h1>
+        <p>Institutional Fixed-Income & Gold Bond Analytics</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span id="badge-source" class="badge badge-live">● LIVE API FEED</span>
+      <button class="btn btn-primary" onclick="triggerSync()">🔄 Sync Free APIs</button>
+      <button class="btn" onclick="openImportModal()">📂 Import Bhavcopy CSV</button>
+      <button class="btn" onclick="toggleTheme()">🌓 Theme</button>
+    </div>
+  </header>
+
+  <!-- Executive KPI Ribbon -->
+  <section class="kpi-ribbon">
+    <div class="kpi-card">
+      <span class="kpi-label">10Y Benchmark Sovereign Yield</span>
+      <span class="kpi-value" id="kpi-10y-gsec">7.18%</span>
+      <span class="kpi-subtext">Government of India 7.18 GS 2033</span>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Top Risk-Adjusted Pick (RAYS)</span>
+      <span class="kpi-value" id="kpi-top-pick" style="color: var(--accent-green);">-</span>
+      <span class="kpi-subtext" id="kpi-top-pick-sub">Max Risk-Adjusted Yield</span>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Screened Portfolio Avg YTM</span>
+      <span class="kpi-value" id="kpi-screened-ytm" style="color: var(--accent-blue);">-</span>
+      <span class="kpi-subtext" id="kpi-screened-spread">+0 bps vs G-Sec</span>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">24K Gold Spot Benchmark</span>
+      <span class="kpi-value" id="kpi-gold-spot" style="color: var(--accent-gold);">₹7,850.00</span>
+      <span class="kpi-subtext">Derived via GOLDBEES / 1g Parity</span>
+    </div>
+  </section>
+
+  <!-- Main Grid -->
+  <div class="terminal-container">
+
+    <!-- Sidebar Controls -->
+    <aside class="sidebar">
+      <div class="filter-section">
+        <div class="filter-title">
+          <span>Asset Categories</span>
+        </div>
+        <div class="checkbox-group">
+          <label class="checkbox-label"><input type="checkbox" id="cat-gsec" checked onchange="runFilter()"> Government Bonds (G-Sec)</label>
+          <label class="checkbox-label"><input type="checkbox" id="cat-tbill" checked onchange="runFilter()"> Treasury Bills (T-Bill)</label>
+          <label class="checkbox-label"><input type="checkbox" id="cat-sgb" checked onchange="runFilter()"> Sovereign Gold Bonds (SGB)</label>
+          <label class="checkbox-label"><input type="checkbox" id="cat-ncd" checked onchange="runFilter()"> Corporate Bonds (NCD)</label>
+          <label class="checkbox-label"><input type="checkbox" id="cat-etf" checked onchange="runFilter()"> Target Maturity ETFs</label>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-title">
+          <span>Seniority & Security Tier</span>
+          <button class="btn" style="padding: 2px 6px; font-size: 10px;" onclick="resetSafePreset()">Safe Preset</button>
+        </div>
+        <div class="checkbox-group">
+          <label class="checkbox-label"><input type="checkbox" id="sen-sov" checked onchange="runFilter()"> Sovereign Guarantee</label>
+          <label class="checkbox-label"><input type="checkbox" id="sen-sr" checked onchange="runFilter()"> Senior Secured (AAA/AA+)</label>
+          <label class="checkbox-label"><input type="checkbox" id="sen-sec" onchange="runFilter()"> Secured Corporate</label>
+          <label class="checkbox-label"><input type="checkbox" id="sen-unsec" onchange="runFilter()"> Unsecured Subordinated</label>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-title">Minimum Credit Rating</div>
+        <select id="select-rating" onchange="runFilter()">
+          <option value="AA" selected>AA or Higher (Institutional Sweet Spot)</option>
+          <option value="AA+">AA+ or Higher</option>
+          <option value="AAA">AAA / Sovereign Only</option>
+          <option value="SOV">Sovereign (SOV) Only</option>
+          <option value="ALL">All Ratings (Include Speculative)</option>
+        </select>
+      </div>
+
+      <div class="filter-section">
+        <div class="slider-group">
+          <div class="slider-header">
+            <span>Min Effective YTM</span>
+            <span id="val-min-ytm">6.50%</span>
+          </div>
+          <input type="range" id="slide-min-ytm" min="0" max="12" step="0.25" value="6.5" oninput="updateSliderLabels(); runFilter()">
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-header">
+            <span>Max Duration (Years)</span>
+            <span id="val-max-dur">6.5 yrs</span>
+          </div>
+          <input type="range" id="slide-max-dur" min="0.5" max="10" step="0.5" value="6.5" oninput="updateSliderLabels(); runFilter()">
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-header">
+            <span>Min Corporate Asset Cover</span>
+            <span id="val-min-cover">1.25x</span>
+          </div>
+          <input type="range" id="slide-min-cover" min="1.0" max="1.50" step="0.05" value="1.25" oninput="updateSliderLabels(); runFilter()">
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-header">
+            <span>Expected Gold CAGR</span>
+            <span id="val-gold-cagr">7.50%</span>
+          </div>
+          <input type="range" id="slide-gold-cagr" min="0" max="15" step="0.5" value="7.5" oninput="updateSliderLabels(); runFilter()">
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <label class="checkbox-label" style="font-weight: 600; color: var(--accent-rose);">
+          <input type="checkbox" id="check-guardrail" checked onchange="runFilter()">
+          🛡️ Exclude Yield Traps (Guardrail Active)
+        </label>
+        <p style="font-size: 11px; color: var(--text-dim);">
+          Automatically drops distressed bonds (e.g. Reliance Capital default benchmark) or unsecured debt with excessive spreads.
+        </p>
+      </div>
+    </aside>
+
+    <!-- Main Analytics Workspace -->
+    <main class="main-workspace">
+
+      <!-- Charts Row -->
+      <section class="charts-row">
+        <!-- Efficient Frontier Chart -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title">
+              <span>📈 Debt Efficient Frontier</span>
+              <span style="font-size: 11px; font-weight: normal; color: var(--text-muted);">(Risk Score vs. YTM %)</span>
+            </div>
+            <div class="chart-legend">
+              <div class="legend-item"><span class="legend-dot" style="background: var(--accent-blue);"></span> Sov</div>
+              <div class="legend-item"><span class="legend-dot" style="background: var(--accent-green);"></span> Sr Secured</div>
+              <div class="legend-item"><span class="legend-dot" style="background: var(--accent-amber);"></span> Secured</div>
+              <div class="legend-item"><span class="legend-dot" style="background: var(--accent-rose);"></span> Trap</div>
+            </div>
+          </div>
+          <div class="chart-svg-container">
+            <svg id="svg-frontier" viewBox="0 0 500 250"></svg>
+          </div>
+        </div>
+
+        <!-- Sovereign Yield Curve & Credit Spreads -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title">
+              <span>📉 Sovereign Curve & Term Structure</span>
+              <span style="font-size: 11px; font-weight: normal; color: var(--text-muted);">(Maturity vs. YTM %)</span>
+            </div>
+            <div class="chart-legend">
+              <div class="legend-item"><span class="legend-dot" style="background: var(--accent-blue);"></span> G-Sec Curve</div>
+              <div class="legend-item"><span class="legend-dot" style="background: var(--accent-green);"></span> NCD Spreads</div>
+            </div>
+          </div>
+          <div class="chart-svg-container">
+            <svg id="svg-curve" viewBox="0 0 500 250"></svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- Institutional Screener Table -->
+      <section class="table-panel">
+        <div class="table-toolbar">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <input type="text" id="table-search" class="search-input" placeholder="Search issuer, symbol, or ISIN..." oninput="runFilter()">
+            <span id="screened-count" style="font-size: 12px; color: var(--text-muted);">Showing 0 securities</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn" onclick="toggleSelectAll(true)">Select All for Ladder</button>
+            <button class="btn" onclick="toggleSelectAll(false)">Deselect All</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table id="bonds-table">
+            <thead>
+              <tr>
+                <th style="width: 30px;">✓</th>
+                <th onclick="sortTable('symbol')">Symbol / ISIN ⬍</th>
+                <th onclick="sortTable('issuer')">Issuer ⬍</th>
+                <th onclick="sortTable('category')">Category ⬍</th>
+                <th onclick="sortTable('seniority')">Seniority ⬍</th>
+                <th onclick="sortTable('rating')">Rating ⬍</th>
+                <th onclick="sortTable('effective_ytm')">Effective YTM ⬍</th>
+                <th onclick="sortTable('spread_over_gsec_bps')">Spread (bps) ⬍</th>
+                <th onclick="sortTable('modified_duration')">D_mod (Yrs) ⬍</th>
+                <th onclick="sortTable('asset_cover_ratio')">Asset Cover ⬍</th>
+                <th onclick="sortTable('risk_band')">Risk Band ⬍</th>
+                <th onclick="sortTable('rays_score')">RAYS Score ⬍</th>
+              </tr>
+            </thead>
+            <tbody id="bonds-tbody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Portfolio Cash Flow Ladder Section -->
+      <section class="ladder-panel">
+        <div class="chart-header">
+          <div class="chart-title">
+            <span>🗓️ 12-Month Portfolio Cash-Flow & Coupon Ladder Simulator</span>
+          </div>
+        </div>
+
+        <div class="ladder-controls">
+          <div class="ladder-metric">
+            <span>Total Capital (₹)</span>
+            <input type="number" id="ladder-capital" value="500000" step="50000" style="background: var(--bg-surface); border: 1px solid var(--border); color: var(--text-main); padding: 4px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 14px; width: 140px;" onchange="computeLadder()">
+          </div>
+          <div class="ladder-metric">
+            <span>Allocation Mode</span>
+            <select id="ladder-mode" onchange="computeLadder()" style="width: 160px; padding: 4px 8px;">
+              <option value="rays_weighted" selected>RAYS-Weighted (Optimal)</option>
+              <option value="equal_weight">Equal-Weight</option>
+            </select>
+          </div>
+          <div class="ladder-metric">
+            <span>Weighted YTM</span>
+            <span id="ladder-weighted-ytm">0.00%</span>
+          </div>
+          <div class="ladder-metric">
+            <span>Portfolio Duration</span>
+            <span id="ladder-weighted-dur" style="color: var(--accent-blue);">0.0 yrs</span>
+          </div>
+          <div class="ladder-metric">
+            <span>Sov + Sr Secured %</span>
+            <span id="ladder-sov-pct" style="color: var(--accent-gold);">0%</span>
+          </div>
+          <div class="ladder-metric">
+            <span>12M Coupon Inflow</span>
+            <span id="ladder-coupon-inflow">₹0.00</span>
+          </div>
+        </div>
+
+        <!-- 12-Month Bar Chart -->
+        <div style="background: var(--bg-card); border-radius: 8px; padding: 14px;">
+          <div style="font-size: 12px; font-weight: 600; margin-bottom: 8px; color: var(--text-muted);">
+            Projected Monthly Cash Inflows (Month 1 to Month 12)
+          </div>
+          <div class="chart-svg-container" style="height: 180px;">
+            <svg id="svg-ladder-bars" viewBox="0 0 600 160"></svg>
+          </div>
+        </div>
+
+        <!-- Allocated Units Table -->
+        <div class="table-wrap" style="max-height: 250px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Symbol</th>
+                <th>Units / Lots</th>
+                <th>Capital Deployed (₹)</th>
+                <th>Portfolio Weight</th>
+                <th>Coupon Rate</th>
+                <th>Effective YTM</th>
+                <th>RAYS</th>
+              </tr>
+            </thead>
+            <tbody id="ladder-allocations-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Tooltip Element -->
+  <div id="tooltip"></div>
+
+  <!-- Bhavcopy Import Modal -->
+  <div id="modal-import" class="modal-backdrop">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="font-size: 14px; font-weight: 700;">📂 Ingest Daily Bhavcopy CSV</h3>
+        <button class="btn" style="padding: 2px 8px;" onclick="closeImportModal()">✕</button>
+      </div>
+      <p style="font-size: 12px; color: var(--text-muted);">
+        Paste or upload an institutional bond sheet (NSE/BSE corporate bond bhavcopy, RBI SGB sheet, or custom CSV).
+      </p>
+      <input type="file" id="csv-file-input" accept=".csv,.txt" onchange="handleFileUpload(event)" style="font-size: 12px;">
+      <textarea id="csv-paste-area" class="csv-area" placeholder="ISIN,SYMBOL,CLOSE,TOTTRDQTY,RATING,ASSET_COVER
+INE001A07TO2,HDFC27,1018.50,15400,CRISIL AAA,1.50
+INE296A07RX6,BAJFIN28,1022.00,8200,CRISIL AAA,1.40"></textarea>
+      <div style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button class="btn" onclick="closeImportModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="submitBhavcopy()">Ingest & Update Database</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Embedded Dataset & Client Logic -->
+  <script>
+    // Injected initial state from server / builder
+    const INITIAL_PAYLOAD = {"securities": [{"isin": "IN002023Z042", "symbol": "364DTB2024", "name": "Government of India 364-Day Treasury Bill", "category": "T-Bill", "security_type": "Treasury Bill", "issuer": "Government of India", "rating": "SOV", "rating_agency": "Government of India / RBI", "seniority": "Sovereign", "asset_cover_ratio": null, "coupon_rate": 0.0, "coupon_frequency": "At Maturity", "face_value": 100.0, "issue_price": 93.45, "issue_date": "2024-01-18", "maturity_date": "2025-01-16", "tenor_years": 1.0, "gold_grams": 0.0, "sovereign_guarantee": 1, "yield_to_maturity": 6.95, "benchmark_index": "FBIL 364-Day T-Bill Index", "expense_ratio": 0.0, "tax_treatment": "Discount treated as short-term capital gain / slab income", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"zero_coupon\": true, \"discount_instrument\": true}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 0.05, "effective_ytm": 140.182, "matched_sovereign_ytm": 6.75, "spread_over_gsec_bps": 13343.2, "macaulay_duration": 1.0, "modified_duration": 0.416, "convexity": 0.347, "rate_shock_100bps_pct": -0.41, "risk_score": 2.0, "rays_score": 198.25, "risk_band": "Sovereign Safe Haven", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 1.0, "seniority_weight": 1.0, "asset_cover_multiplier": 1.0}, {"isin": "IN002023Y029", "symbol": "182DTB2024", "name": "Government of India 182-Day Treasury Bill", "category": "T-Bill", "security_type": "Treasury Bill", "issuer": "Government of India", "rating": "SOV", "rating_agency": "Government of India / RBI", "seniority": "Sovereign", "asset_cover_ratio": null, "coupon_rate": 0.0, "coupon_frequency": "At Maturity", "face_value": 100.0, "issue_price": 96.65, "issue_date": "2024-01-11", "maturity_date": "2024-07-11", "tenor_years": 0.5, "gold_grams": 0.0, "sovereign_guarantee": 1, "yield_to_maturity": 6.85, "benchmark_index": "FBIL 182-Day T-Bill Index", "expense_ratio": 0.0, "tax_treatment": "Discount treated as short-term capital gain / slab income", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"zero_coupon\": true, \"discount_instrument\": true}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 0.05, "effective_ytm": 69.322, "matched_sovereign_ytm": 6.75, "spread_over_gsec_bps": 6257.2, "macaulay_duration": 1.0, "modified_duration": 0.591, "convexity": 0.698, "rate_shock_100bps_pct": -0.59, "risk_score": 2.0, "rays_score": 90.17, "risk_band": "Sovereign Safe Haven", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 1.0, "seniority_weight": 1.0, "asset_cover_multiplier": 1.0}, {"isin": "IN002023X013", "symbol": "91DTB2024", "name": "Government of India 91-Day Treasury Bill", "category": "T-Bill", "security_type": "Treasury Bill", "issuer": "Government of India", "rating": "SOV", "rating_agency": "Government of India / RBI", "seniority": "Sovereign", "asset_cover_ratio": null, "coupon_rate": 0.0, "coupon_frequency": "At Maturity", "face_value": 100.0, "issue_price": 98.35, "issue_date": "2024-01-04", "maturity_date": "2024-04-04", "tenor_years": 0.25, "gold_grams": 0.0, "sovereign_guarantee": 1, "yield_to_maturity": 6.75, "benchmark_index": "FBIL 91-Day T-Bill Index", "expense_ratio": 0.0, "tax_treatment": "Discount treated as short-term capital gain / slab income", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"zero_coupon\": true, \"discount_instrument\": true}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 0.05, "effective_ytm": 33.554, "matched_sovereign_ytm": 6.75, "spread_over_gsec_bps": 2680.4, "macaulay_duration": 1.0, "modified_duration": 0.749, "convexity": 1.121, "rate_shock_100bps_pct": -0.74, "risk_score": 2.0, "rays_score": 38.77, "risk_band": "Sovereign Safe Haven", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 1.0, "seniority_weight": 1.0, "asset_cover_multiplier": 1.0}, {"isin": "IN0020200114", "symbol": "SGB2021VI", "name": "Sovereign Gold Bond 2020-21 Series VI", "category": "SGB", "security_type": "Sovereign Gold Bond", "issuer": "Reserve Bank of India on behalf of GoI", "rating": "SOV", "rating_agency": "Government of India / RBI", "seniority": "Sovereign", "asset_cover_ratio": null, "coupon_rate": 2.5, "coupon_frequency": "Semi-Annual", "face_value": 5117.0, "issue_price": 5117.0, "issue_date": "2020-09-08", "maturity_date": "2028-09-08", "tenor_years": 8.0, "gold_grams": 1.0, "sovereign_guarantee": 1, "yield_to_maturity": 2.5, "benchmark_index": "IBJA 999 Purity Gold Price", "expense_ratio": 0.0, "tax_treatment": "2.5% coupon taxable; 100% Capital Gains EXEMPT if held to maturity", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"gold_purity\": \"999 fine gold\"}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "intrinsic_gold_value": 7850.0, "sgb_discount_to_spot_pct": -34.82, "years_to_maturity": 1.848, "effective_ytm": 38.902, "matched_sovereign_ytm": 7.087, "spread_over_gsec_bps": 3181.5, "macaulay_duration": 1.946, "modified_duration": 1.629, "convexity": 3.381, "rate_shock_100bps_pct": -1.61, "risk_score": 2.0, "rays_score": 30.48, "risk_band": "Sovereign Safe Haven", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 1.0, "seniority_weight": 1.0, "asset_cover_multiplier": 1.0}, {"isin": "IN0020220136", "symbol": "SGB2223IV", "name": "Sovereign Gold Bond 2022-23 Series IV", "category": "SGB", "security_type": "Sovereign Gold Bond", "issuer": "Reserve Bank of India on behalf of GoI", "rating": "SOV", "rating_agency": "Government of India / RBI", "seniority": "Sovereign", "asset_cover_ratio": null, "coupon_rate": 2.5, "coupon_frequency": "Semi-Annual", "face_value": 5611.0, "issue_price": 5611.0, "issue_date": "2023-03-14", "maturity_date": "2031-03-14", "tenor_years": 8.0, "gold_grams": 1.0, "sovereign_guarantee": 1, "yield_to_maturity": 2.5, "benchmark_index": "IBJA 999 Purity Gold Price", "expense_ratio": 0.0, "tax_treatment": "2.5% coupon taxable; 100% Capital Gains EXEMPT if held to maturity", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"gold_purity\": \"999 fine gold\"}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "intrinsic_gold_value": 7850.0, "sgb_discount_to_spot_pct": -28.52, "years_to_maturity": 4.3587, "effective_ytm": 19.155, "matched_sovereign_ytm": 7.127, "spread_over_gsec_bps": 1202.8, "macaulay_duration": 4.171, "modified_duration": 3.807, "convexity": 16.958, "rate_shock_100bps_pct": -3.72, "risk_score": 2.0, "rays_score": 9.82, "risk_band": "Sovereign Safe Haven", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 1.0, "seniority_weight": 1.0, "asset_cover_multiplier": 1.0}, {"isin": "IN0020230028", "symbol": "SGB2324I", "name": "Sovereign Gold Bond 2023-24 Series I", "category": "SGB", "security_type": "Sovereign Gold Bond", "issuer": "Reserve Bank of India on behalf of GoI", "rating": "SOV", "rating_agency": "Government of India / RBI", "seniority": "Sovereign", "asset_cover_ratio": null, "coupon_rate": 2.5, "coupon_frequency": "Semi-Annual", "face_value": 5926.0, "issue_price": 5926.0, "issue_date": "2023-06-27", "maturity_date": "2031-06-27", "tenor_years": 8.0, "gold_grams": 1.0, "sovereign_guarantee": 1, "yield_to_maturity": 2.5, "benchmark_index": "IBJA 999 Purity Gold Price", "expense_ratio": 0.0, "tax_treatment": "2.5% coupon taxable; 100% Capital Gains EXEMPT if held to maturity", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"gold_purity\": \"999 fine gold\"}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "intrinsic_gold_value": 7850.0, "sgb_discount_to_spot_pct": -24.51, "years_to_maturity": 4.6461, "effective_ytm": 16.988, "matched_sovereign_ytm": 7.131, "spread_over_gsec_bps": 985.7, "macaulay_duration": 4.188, "modified_duration": 3.86, "convexity": 17.388, "rate_shock_100bps_pct": -3.77, "risk_score": 2.0, "rays_score": 8.65, "risk_band": "Sovereign Safe Haven", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 1.0, "seniority_weight": 1.0, "asset_cover_multiplier": 1.0}, {"isin": "IN0020230051", "symbol": "SGB2324II", "name": "Sovereign Gold Bond 2023-24 Series II", "category": "SGB", "security_type": "Sovereign Gold Bond", "issuer": "Reserve Bank of India on behalf of GoI", "rating": "SOV", "rating_agency": "Government of India / RBI", "seniority": "Sovereign", "asset_cover_ratio": null, "coupon_rate": 2.5, "coupon_frequency": "Semi-Annual", "face_value": 5923.0, "issue_price": 5923.0, "issue_date": "2023-09-20", "maturity_date": "2031-09-20", "tenor_years": 8.0, "gold_grams": 1.0, "sovereign_guarantee": 1, "yield_to_maturity": 2.5, "benchmark_index": "IBJA 999 Purity Gold Price", "expense_ratio": 0.0, "tax_treatment": "2.5% coupon taxable; 100% Capital Gains EXEMPT if held to maturity", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"gold_purity\": \"999 fine gold\"}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "intrinsic_gold_value": 7850.0, "sgb_discount_to_spot_pct": -24.55, "years_to_maturity": 4.8789, "effective_ytm": 16.668, "matched_sovereign_ytm": 7.135, "spread_over_gsec_bps": 953.3, "macaulay_duration": 4.6, "modified_duration": 4.246, "convexity": 20.993, "rate_shock_100bps_pct": -4.14, "risk_score": 2.0, "rays_score": 8.09, "risk_band": "Sovereign Safe Haven", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 1.0, "seniority_weight": 1.0, "asset_cover_multiplier": 1.0}, {"isin": "INE053F07936", "symbol": "KOTAKPRIME27", "name": "Kotak Mahindra Prime Ltd 7.82% Senior Secured NCD 2027", "category": "Corporate NCD", "security_type": "Non-Convertible Debenture", "issuer": "Kotak Mahindra Prime Ltd", "rating": "CRISIL AAA", "rating_agency": "CRISIL", "seniority": "Senior Secured", "asset_cover_ratio": 1.35, "coupon_rate": 7.82, "coupon_frequency": "Annual", "face_value": 1000.0, "issue_price": 1000.0, "issue_date": "2024-02-20", "maturity_date": "2027-11-20", "tenor_years": 3.75, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 7.84, "benchmark_index": "CRISIL AAA Corporate Index", "expense_ratio": 0.0, "tax_treatment": "Interest taxable at slab rate", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"parent\": \"Kotak Mahindra Bank Ltd\", \"security_charge\": \"Exclusive charge on specific standard vehicle loans\"}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 1.0459, "effective_ytm": 7.82, "matched_sovereign_ytm": 7.044, "spread_over_gsec_bps": 77.6, "macaulay_duration": 1.0, "modified_duration": 0.927, "convexity": 1.72, "rate_shock_100bps_pct": -0.92, "risk_score": 11.7, "rays_score": 7.46, "risk_band": "Tier A - Prime Senior Secured", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.96, "seniority_weight": 0.92, "asset_cover_multiplier": 1.04}, {"isin": "INF209KB1174", "symbol": "NIPPON_SDL26", "name": "Nippon India ETF Nifty SDL - 2026 Maturity", "category": "Debt ETF", "security_type": "Target Maturity ETF", "issuer": "Nippon Life India Asset Management", "rating": "SOV", "rating_agency": "Government of India / RBI", "seniority": "Sovereign", "asset_cover_ratio": null, "coupon_rate": 0.0, "coupon_frequency": "None (ETF)", "face_value": 100.0, "issue_price": 100.0, "issue_date": "2021-06-25", "maturity_date": "2026-06-30", "tenor_years": 5.0, "gold_grams": 0.0, "sovereign_guarantee": 1, "yield_to_maturity": 7.25, "benchmark_index": "Nifty SDL Apr 2026 Top 20 Equal Weight Index", "expense_ratio": 0.0015, "tax_treatment": "Debt fund taxation as per income slab", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"underlying\": \"State Development Loans (SDLs)\", \"state_guarantee\": true}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 0.05, "effective_ytm": 7.1, "matched_sovereign_ytm": 6.75, "spread_over_gsec_bps": 35.0, "macaulay_duration": 1.0, "modified_duration": 0.934, "convexity": 1.744, "rate_shock_100bps_pct": -0.92, "risk_score": 2.0, "rays_score": 7.35, "risk_band": "Sovereign Safe Haven", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 1.0, "seniority_weight": 1.0, "asset_cover_multiplier": 1.0}, {"isin": "IN0020230119", "symbol": "SGB2324III", "name": "Sovereign Gold Bond 2023-24 Series III", "category": "SGB", "security_type": "Sovereign Gold Bond", "issuer": "Reserve Bank of India on behalf of GoI", "rating": "SOV", "rating_agency": "Government of India / RBI", "seniority": "Sovereign", "asset_cover_ratio": null, "coupon_rate": 2.5, "coupon_frequency": "Semi-Annual", "face_value": 6199.0, "issue_price": 6199.0, "issue_date": "2023-12-28", "maturity_date": "2031-12-28", "tenor_years": 8.0, "gold_grams": 1.0, "sovereign_guarantee": 1, "yield_to_maturity": 2.5, "benchmark_index": "IBJA 999 Purity Gold Price", "expense_ratio": 0.0, "tax_treatment": "2.5% coupon taxable; 100% Capital Gains EXEMPT if held to maturity", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"gold_purity\": \"999 fine gold\", \"discount_online_inr\": 50}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "intrinsic_gold_value": 7850.0, "sgb_discount_to_spot_pct": -21.03, "years_to_maturity": 5.1499, "effective_ytm": 15.172, "matched_sovereign_ytm": 7.14, "spread_over_gsec_bps": 803.2, "macaulay_duration": 4.616, "modified_duration": 4.29, "convexity": 21.38, "rate_shock_100bps_pct": -4.18, "risk_score": 2.0, "rays_score": 7.33, "risk_band": "Sovereign Safe Haven", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 1.0, "seniority_weight": 1.0, "asset_cover_multiplier": 1.0}, {"isin": "INE498L07BC8", "symbol": "LTFH28", "name": "L&T Finance Holdings Ltd 8.15% Senior Secured NCD 2028", "category": "Corporate NCD", "security_type": "Non-Convertible Debenture", "issuer": "L&T Finance Ltd", "rating": "CRISIL AA+", "rating_agency": "CRISIL / CARE", "seniority": "Senior Secured", "asset_cover_ratio": 1.3, "coupon_rate": 8.15, "coupon_frequency": "Annual", "face_value": 1000.0, "issue_price": 1000.0, "issue_date": "2023-03-12", "maturity_date": "2028-03-12", "tenor_years": 5.0, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 8.18, "benchmark_index": "CRISIL AA+ NBFC Index", "expense_ratio": 0.0, "tax_treatment": "Interest taxable at slab rate", "risk_tier": "Manageable Risk - Moderate", "metadata_json": "{\"parent\": \"Larsen & Toubro Ltd\", \"security_charge\": \"Hypothecation on designated retail receivables\"}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 1.3552, "effective_ytm": 8.15, "matched_sovereign_ytm": 7.073, "spread_over_gsec_bps": 107.7, "macaulay_duration": 1.0, "modified_duration": 0.925, "convexity": 1.71, "rate_shock_100bps_pct": -0.92, "risk_score": 19.0, "rays_score": 7.0, "risk_band": "Tier A - Prime Senior Secured", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.88, "seniority_weight": 0.92, "asset_cover_multiplier": 1.02}, {"isin": "IN0020230150", "symbol": "SGB2324IV", "name": "Sovereign Gold Bond 2023-24 Series IV", "category": "SGB", "security_type": "Sovereign Gold Bond", "issuer": "Reserve Bank of India on behalf of GoI", "rating": "SOV", "rating_agency": "Government of India / RBI", "seniority": "Sovereign", "asset_cover_ratio": null, "coupon_rate": 2.5, "coupon_frequency": "Semi-Annual", "face_value": 6263.0, "issue_price": 6263.0, "issue_date": "2024-02-21", "maturity_date": "2032-02-21", "tenor_years": 8.0, "gold_grams": 1.0, "sovereign_guarantee": 1, "yield_to_maturity": 2.5, "benchmark_index": "IBJA 999 Purity Gold Price", "expense_ratio": 0.0, "tax_treatment": "2.5% coupon taxable; 100% Capital Gains EXEMPT if held to maturity", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"gold_purity\": \"999 fine gold\", \"premature_exit_window_years\": [5, 6, 7]}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "intrinsic_gold_value": 7850.0, "sgb_discount_to_spot_pct": -20.22, "years_to_maturity": 5.3005, "effective_ytm": 14.781, "matched_sovereign_ytm": 7.142, "spread_over_gsec_bps": 763.9, "macaulay_duration": 5.022, "modified_duration": 4.676, "convexity": 25.38, "rate_shock_100bps_pct": -4.55, "risk_score": 2.0, "rays_score": 6.84, "risk_band": "Sovereign Safe Haven", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 1.0, "seniority_weight": 1.0, "asset_cover_multiplier": 1.0}, {"isin": "INF200KA1UT8", "symbol": "SBI_CPSE_SDL26", "name": "SBI CPSE Bond Plus SDL ETF - 2026", "category": "Debt ETF", "security_type": "Target Maturity ETF", "issuer": "SBI Mutual Fund", "rating": "CRISIL AAA", "rating_agency": "CRISIL", "seniority": "Senior Secured", "asset_cover_ratio": 1.4, "coupon_rate": 0.0, "coupon_frequency": "None (ETF)", "face_value": 100.0, "issue_price": 100.0, "issue_date": "2021-04-20", "maturity_date": "2026-04-30", "tenor_years": 5.0, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 7.2, "benchmark_index": "Nifty CPSE Bond Plus SDL 2026 Index", "expense_ratio": 0.0012, "tax_treatment": "Debt fund taxation as per income slab", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"mix\": \"50% CPSE AAA PSU Bonds + 50% State Development Loans\"}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 0.05, "effective_ytm": 7.08, "matched_sovereign_ytm": 6.75, "spread_over_gsec_bps": 33.0, "macaulay_duration": 1.0, "modified_duration": 0.934, "convexity": 1.744, "rate_shock_100bps_pct": -0.93, "risk_score": 11.7, "rays_score": 6.47, "risk_band": "Tier A - Prime Senior Secured", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.96, "seniority_weight": 0.92, "asset_cover_multiplier": 1.0}, {"isin": "INF732E01086", "symbol": "BBETF25", "name": "Edelweiss BHARAT Bond ETF - April 2025", "category": "Debt ETF", "security_type": "Target Maturity ETF", "issuer": "Edelweiss Asset Management / Government of India", "rating": "CRISIL AAA", "rating_agency": "CRISIL", "seniority": "Senior Secured", "asset_cover_ratio": 1.4, "coupon_rate": 0.0, "coupon_frequency": "None (ETF)", "face_value": 1000.0, "issue_price": 1000.0, "issue_date": "2019-12-12", "maturity_date": "2025-04-15", "tenor_years": 5.34, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 7.1, "benchmark_index": "Nifty BHARAT Bond Index - April 2025", "expense_ratio": 0.0005, "tax_treatment": "Taxed as debt fund as per prevailing Finance Act", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"target_maturity\": \"2025-04-15\", \"holdings\": [\"REC Ltd\", \"PFC Ltd\", \"PowerGrid\", \"NHPC\", \"NTPC\", \"IOCL\"], \"fund_category\": \"Target Maturity Fund\"}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 0.05, "effective_ytm": 7.05, "matched_sovereign_ytm": 6.75, "spread_over_gsec_bps": 30.0, "macaulay_duration": 1.0, "modified_duration": 0.934, "convexity": 1.745, "rate_shock_100bps_pct": -0.93, "risk_score": 11.7, "rays_score": 6.44, "risk_band": "Tier A - Prime Senior Secured", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.96, "seniority_weight": 0.92, "asset_cover_multiplier": 1.0}, {"isin": "INE001A07TO2", "symbol": "HDFC27", "name": "HDFC Ltd (HDFC Bank) 7.95% Senior Secured NCD 2027", "category": "Corporate NCD", "security_type": "Non-Convertible Debenture", "issuer": "HDFC Bank Ltd", "rating": "CRISIL AAA", "rating_agency": "CRISIL", "seniority": "Senior Secured", "asset_cover_ratio": 1.5, "coupon_rate": 7.95, "coupon_frequency": "Annual", "face_value": 1000.0, "issue_price": 1000.0, "issue_date": "2022-09-24", "maturity_date": "2027-09-24", "tenor_years": 5.0, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 7.85, "benchmark_index": "CRISIL 5-Year AAA Corporate Bond Index", "expense_ratio": 0.0, "tax_treatment": "Interest taxable at slab rate; TDS applicable", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"security_charge\": \"Exclusive charge on receivables and mortgages\", \"debenture_trustee\": \"IDBI Trusteeship\"}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": 1015.5, "traded_volume": 12500, "last_traded_date": "2026-11-03T09:48:26.176201+00:00", "years_to_maturity": 0.8898, "effective_ytm": 6.302, "matched_sovereign_ytm": 7.029, "spread_over_gsec_bps": -72.7, "macaulay_duration": 1.0, "modified_duration": 0.941, "convexity": 1.77, "rate_shock_100bps_pct": -0.93, "risk_score": 11.7, "rays_score": 6.31, "risk_band": "Tier A - Prime Senior Secured", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.96, "seniority_weight": 0.92, "asset_cover_multiplier": 1.1}, {"isin": "IN0020230010", "symbol": "706GS2028", "name": "7.06% Government of India Sovereign Bond 2028", "category": "G-Sec", "security_type": "Government Bond", "issuer": "Government of India", "rating": "SOV", "rating_agency": "Government of India / RBI", "seniority": "Sovereign", "asset_cover_ratio": null, "coupon_rate": 7.06, "coupon_frequency": "Semi-Annual", "face_value": 100.0, "issue_price": 100.0, "issue_date": "2023-04-10", "maturity_date": "2028-04-10", "tenor_years": 5.0, "gold_grams": 0.0, "sovereign_guarantee": 1, "yield_to_maturity": 7.08, "benchmark_index": "5-Year Benchmark G-Sec Index", "expense_ratio": 0.0, "tax_treatment": "Interest taxable at slab rate", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"clearing_house\": \"CCIL\", \"rbi_retail_direct_eligible\": true}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 1.4346, "effective_ytm": 7.06, "matched_sovereign_ytm": 7.08, "spread_over_gsec_bps": -2.0, "macaulay_duration": 1.449, "modified_duration": 1.4, "convexity": 2.673, "rate_shock_100bps_pct": -1.39, "risk_score": 2.0, "rays_score": 5.97, "risk_band": "Sovereign Safe Haven", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 1.0, "seniority_weight": 1.0, "asset_cover_multiplier": 1.0}, {"isin": "INE870H07212", "symbol": "NETWORK18_28", "name": "Network18 Media & Investments 8.20% Secured NCD 2028", "category": "Corporate NCD", "security_type": "Non-Convertible Debenture", "issuer": "Network18 Media & Investments Ltd", "rating": "CARE AA+", "rating_agency": "CARE", "seniority": "Secured", "asset_cover_ratio": 1.3, "coupon_rate": 8.2, "coupon_frequency": "Annual", "face_value": 1000.0, "issue_price": 1000.0, "issue_date": "2023-04-10", "maturity_date": "2028-04-10", "tenor_years": 5.0, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 8.25, "benchmark_index": "Corporate AA+ Index", "expense_ratio": 0.0, "tax_treatment": "Interest taxable at slab rate", "risk_tier": "Manageable Risk - Moderate", "metadata_json": "{\"group\": \"Reliance Industries Group\"}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 1.4346, "effective_ytm": 8.2, "matched_sovereign_ytm": 7.08, "spread_over_gsec_bps": 112.0, "macaulay_duration": 1.0, "modified_duration": 0.924, "convexity": 1.708, "rate_shock_100bps_pct": -0.92, "risk_score": 34.0, "rays_score": 5.74, "risk_band": "Tier B - High-Yield Secured", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.88, "seniority_weight": 0.75, "asset_cover_multiplier": 1.02}, {"isin": "INE140A07TF1", "symbol": "PIRAMAL26", "name": "Piramal Enterprises Ltd 9.10% Secured NCD 2026", "category": "Corporate NCD", "security_type": "Non-Convertible Debenture", "issuer": "Piramal Enterprises Ltd", "rating": "ICRA AA", "rating_agency": "ICRA / CARE", "seniority": "Secured", "asset_cover_ratio": 1.25, "coupon_rate": 9.1, "coupon_frequency": "Annual", "face_value": 1000.0, "issue_price": 1000.0, "issue_date": "2023-11-12", "maturity_date": "2026-11-12", "tenor_years": 3.0, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 9.2, "benchmark_index": "CRISIL AA Corporate Index", "expense_ratio": 0.0, "tax_treatment": "Interest taxable at slab rate", "risk_tier": "Manageable Risk - Moderate", "metadata_json": "{\"security_charge\": \"First ranking pari-passu charge on receivables\"}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 0.05, "effective_ytm": 9.1, "matched_sovereign_ytm": 6.75, "spread_over_gsec_bps": 235.0, "macaulay_duration": 1.0, "modified_duration": 0.917, "convexity": 1.68, "rate_shock_100bps_pct": -0.91, "risk_score": 40.0, "rays_score": 5.7, "risk_band": "Tier B - High-Yield Secured", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.8, "seniority_weight": 0.75, "asset_cover_multiplier": 1.0}, {"isin": "INE528S07094", "symbol": "MANAPPURAM27", "name": "Manappuram Finance Ltd 8.90% Secured NCD 2027", "category": "Corporate NCD", "security_type": "Non-Convertible Debenture", "issuer": "Manappuram Finance Ltd", "rating": "CRISIL AA", "rating_agency": "CRISIL / CARE", "seniority": "Secured", "asset_cover_ratio": 1.25, "coupon_rate": 8.9, "coupon_frequency": "Annual", "face_value": 1000.0, "issue_price": 1000.0, "issue_date": "2023-10-18", "maturity_date": "2027-10-18", "tenor_years": 4.0, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 9.05, "benchmark_index": "CRISIL AA NBFC Index", "expense_ratio": 0.0, "tax_treatment": "Interest taxable at slab rate", "risk_tier": "Manageable Risk - Moderate", "metadata_json": "{\"security_charge\": \"First charge on gold loan receivables book\", \"underlying_collateral\": \"Gold jewellery pledge\"}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 0.9555, "effective_ytm": 8.9, "matched_sovereign_ytm": 7.035, "spread_over_gsec_bps": 186.5, "macaulay_duration": 1.0, "modified_duration": 0.918, "convexity": 1.686, "rate_shock_100bps_pct": -0.91, "risk_score": 40.0, "rays_score": 5.57, "risk_band": "Tier B - High-Yield Secured", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.8, "seniority_weight": 0.75, "asset_cover_multiplier": 1.0}, {"isin": "INE556F08KB7", "symbol": "TATAMOTFIN26", "name": "Tata Motors Finance Ltd 8.45% Secured NCD 2026", "category": "Corporate NCD", "security_type": "Non-Convertible Debenture", "issuer": "Tata Motors Finance Ltd", "rating": "CRISIL AA", "rating_agency": "CRISIL", "seniority": "Secured", "asset_cover_ratio": 1.25, "coupon_rate": 8.45, "coupon_frequency": "Annual", "face_value": 1000.0, "issue_price": 1000.0, "issue_date": "2023-05-15", "maturity_date": "2026-05-15", "tenor_years": 3.0, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 8.52, "benchmark_index": "CRISIL AA Corporate Index", "expense_ratio": 0.0, "tax_treatment": "Interest taxable at slab rate", "risk_tier": "Manageable Risk - Moderate", "metadata_json": "{\"parent\": \"Tata Motors Ltd\", \"security_charge\": \"Hypothecation of vehicle loan book\"}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 0.05, "effective_ytm": 8.45, "matched_sovereign_ytm": 6.75, "spread_over_gsec_bps": 170.0, "macaulay_duration": 1.0, "modified_duration": 0.922, "convexity": 1.7, "rate_shock_100bps_pct": -0.91, "risk_score": 40.0, "rays_score": 5.28, "risk_band": "Tier B - High-Yield Secured", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.8, "seniority_weight": 0.75, "asset_cover_multiplier": 1.0}, {"isin": "INE999A07XYZ", "symbol": "NEWCORP29", "name": "NewCorp Senior Secured NCD", "category": "Corporate NCD", "security_type": "Non-Convertible Debenture", "issuer": "NewCorp Senior Secured NCD", "rating": "CRISIL AAA", "rating_agency": "Imported", "seniority": "Senior Secured", "asset_cover_ratio": 1.45, "coupon_rate": 8.5, "coupon_frequency": "Annual", "face_value": 1000.0, "issue_price": 1000.0, "issue_date": "2024-01-01", "maturity_date": "2030-01-01", "tenor_years": 5.0, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 8.5, "benchmark_index": null, "expense_ratio": 0.0, "tax_treatment": "Standard debt slab", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"source\": \"bhavcopy_import\"}", "created_at": "2026-11-03T09:48:26.176201+00:00", "current_price": 1000.0, "traded_volume": 3200, "last_traded_date": "2026-11-03T09:48:26.176201+00:00", "years_to_maturity": 3.1622, "effective_ytm": 8.5, "matched_sovereign_ytm": 7.108, "spread_over_gsec_bps": 139.2, "macaulay_duration": 2.771, "modified_duration": 2.554, "convexity": 9.16, "rate_shock_100bps_pct": -2.51, "risk_score": 11.7, "rays_score": 5.07, "risk_band": "Tier A - Prime Senior Secured", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.96, "seniority_weight": 0.92, "asset_cover_multiplier": 1.08}, {"isin": "INE296A07RX6", "symbol": "BAJFIN28", "name": "Bajaj Finance Ltd 7.75% Senior Secured NCD 2028", "category": "Corporate NCD", "security_type": "Non-Convertible Debenture", "issuer": "Bajaj Finance Ltd", "rating": "CRISIL AAA", "rating_agency": "CRISIL / ICRA", "seniority": "Senior Secured", "asset_cover_ratio": 1.4, "coupon_rate": 7.75, "coupon_frequency": "Annual", "face_value": 1000.0, "issue_price": 1000.0, "issue_date": "2023-06-15", "maturity_date": "2028-06-15", "tenor_years": 5.0, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 7.8, "benchmark_index": "CRISIL AAA NBFC Index", "expense_ratio": 0.0, "tax_treatment": "Interest taxable at slab rate", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"security_charge\": \"First ranking pari-passu charge on loan assets\", \"debenture_trustee\": \"Catalyst Trusteeship\"}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": 1022.0, "traded_volume": 8400, "last_traded_date": "2026-11-03T09:48:26.176201+00:00", "years_to_maturity": 1.6153, "effective_ytm": 6.541, "matched_sovereign_ytm": 7.083, "spread_over_gsec_bps": -54.2, "macaulay_duration": 1.929, "modified_duration": 1.81, "convexity": 5.035, "rate_shock_100bps_pct": -1.79, "risk_score": 11.7, "rays_score": 4.55, "risk_band": "Tier A - Prime Senior Secured", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.96, "seniority_weight": 0.92, "asset_cover_multiplier": 1.06}, {"isin": "INE020B08DF4", "symbol": "REC29", "name": "REC Limited 7.54% Senior Secured NCD 2029", "category": "Corporate NCD", "security_type": "Non-Convertible Debenture", "issuer": "REC Limited (Maharatna PSU)", "rating": "CRISIL AAA", "rating_agency": "CRISIL / CARE", "seniority": "Senior Secured", "asset_cover_ratio": 1.5, "coupon_rate": 7.54, "coupon_frequency": "Annual", "face_value": 1000.0, "issue_price": 1000.0, "issue_date": "2022-12-10", "maturity_date": "2029-12-10", "tenor_years": 7.0, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 7.55, "benchmark_index": "CRISIL AAA PSU Index", "expense_ratio": 0.0, "tax_treatment": "Interest taxable at slab rate", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"psu_category\": \"Maharatna\", \"security_charge\": \"First charge on receivables and book debts\"}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 3.102, "effective_ytm": 7.54, "matched_sovereign_ytm": 7.107, "spread_over_gsec_bps": 43.3, "macaulay_duration": 2.795, "modified_duration": 2.599, "convexity": 9.432, "rate_shock_100bps_pct": -2.55, "risk_score": 11.7, "rays_score": 4.54, "risk_band": "Tier A - Prime Senior Secured", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.96, "seniority_weight": 0.92, "asset_cover_multiplier": 1.1}, {"isin": "INE721A07QU8", "symbol": "SHRIRAM28", "name": "Shriram Finance Ltd 8.75% Senior Secured NCD 2028", "category": "Corporate NCD", "security_type": "Non-Convertible Debenture", "issuer": "Shriram Finance Ltd", "rating": "CRISIL AA+", "rating_agency": "CRISIL / India Ratings", "seniority": "Senior Secured", "asset_cover_ratio": 1.25, "coupon_rate": 8.75, "coupon_frequency": "Monthly", "face_value": 1000.0, "issue_price": 1000.0, "issue_date": "2023-07-28", "maturity_date": "2028-07-28", "tenor_years": 5.0, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 8.85, "benchmark_index": "CRISIL AA+ NBFC Index", "expense_ratio": 0.0, "tax_treatment": "Interest taxable at slab rate", "risk_tier": "Manageable Risk - Moderate", "metadata_json": "{\"security_charge\": \"First charge on commercial vehicle loan receivables\", \"monthly_payout\": true}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": 1035.0, "traded_volume": 5600, "last_traded_date": "2026-11-03T09:48:26.176201+00:00", "years_to_maturity": 1.7331, "effective_ytm": 6.626, "matched_sovereign_ytm": 7.085, "spread_over_gsec_bps": -45.9, "macaulay_duration": 1.632, "modified_duration": 1.623, "convexity": 2.888, "rate_shock_100bps_pct": -1.61, "risk_score": 19.0, "rays_score": 4.21, "risk_band": "Tier A - Prime Senior Secured", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.88, "seniority_weight": 0.92, "asset_cover_multiplier": 1.0}, {"isin": "INE134E08KY9", "symbol": "PFC30", "name": "Power Finance Corporation 7.60% Senior Secured NCD 2030", "category": "Corporate NCD", "security_type": "Non-Convertible Debenture", "issuer": "Power Finance Corporation Ltd (Maharatna PSU)", "rating": "CARE AAA", "rating_agency": "CARE / CRISIL", "seniority": "Senior Secured", "asset_cover_ratio": 1.5, "coupon_rate": 7.6, "coupon_frequency": "Annual", "face_value": 1000.0, "issue_price": 1000.0, "issue_date": "2023-07-15", "maturity_date": "2030-07-15", "tenor_years": 7.0, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 7.58, "benchmark_index": "CRISIL AAA PSU Index", "expense_ratio": 0.0, "tax_treatment": "Interest taxable at slab rate", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"psu_category\": \"Maharatna\", \"security_charge\": \"Pari-passu charge on immovable and movable assets\"}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 3.6961, "effective_ytm": 7.6, "matched_sovereign_ytm": 7.116, "spread_over_gsec_bps": 48.4, "macaulay_duration": 3.596, "modified_duration": 3.342, "convexity": 14.961, "rate_shock_100bps_pct": -3.27, "risk_score": 11.7, "rays_score": 4.04, "risk_band": "Tier A - Prime Senior Secured", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.96, "seniority_weight": 0.92, "asset_cover_multiplier": 1.1}, {"isin": "INE756I07DT7", "symbol": "IRFC31", "name": "Indian Railway Finance Corporation 7.49% Senior Secured NCD 2031", "category": "Corporate NCD", "security_type": "Non-Convertible Debenture", "issuer": "Indian Railway Finance Corporation Ltd", "rating": "CRISIL AAA", "rating_agency": "CRISIL / ICRA", "seniority": "Senior Secured", "asset_cover_ratio": 1.5, "coupon_rate": 7.49, "coupon_frequency": "Annual", "face_value": 1000.0, "issue_price": 1000.0, "issue_date": "2021-03-25", "maturity_date": "2031-03-25", "tenor_years": 10.0, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 7.45, "benchmark_index": "CRISIL AAA PSU Index", "expense_ratio": 0.0, "tax_treatment": "Interest taxable at slab rate", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"ministry\": \"Ministry of Railways\", \"sovereign_ownership\": 0.86}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 4.3888, "effective_ytm": 7.49, "matched_sovereign_ytm": 7.127, "spread_over_gsec_bps": 36.3, "macaulay_duration": 3.601, "modified_duration": 3.35, "convexity": 15.021, "rate_shock_100bps_pct": -3.27, "risk_score": 11.7, "rays_score": 3.98, "risk_band": "Tier A - Prime Senior Secured", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.96, "seniority_weight": 0.92, "asset_cover_multiplier": 1.1}, {"isin": "INF732E01094", "symbol": "BBETF30", "name": "Edelweiss BHARAT Bond ETF - April 2030", "category": "Debt ETF", "security_type": "Target Maturity ETF", "issuer": "Edelweiss Asset Management / Government of India", "rating": "CRISIL AAA", "rating_agency": "CRISIL", "seniority": "Senior Secured", "asset_cover_ratio": 1.4, "coupon_rate": 0.0, "coupon_frequency": "None (ETF)", "face_value": 1000.0, "issue_price": 1000.0, "issue_date": "2019-12-12", "maturity_date": "2030-04-15", "tenor_years": 10.34, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 7.35, "benchmark_index": "Nifty BHARAT Bond Index - April 2030", "expense_ratio": 0.0005, "tax_treatment": "Debt fund taxation as per income slab", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"target_maturity\": \"2030-04-15\", \"holdings\": [\"PFC\", \"REC\", \"PowerGrid\", \"NTPC\", \"HUDCO\", \"Nuclear Power Corp\"], \"etf_structure\": \"Open-ended target maturity\"}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 3.447, "effective_ytm": 7.3, "matched_sovereign_ytm": 7.112, "spread_over_gsec_bps": 18.8, "macaulay_duration": 3.0, "modified_duration": 2.796, "convexity": 10.423, "rate_shock_100bps_pct": -2.74, "risk_score": 11.7, "rays_score": 3.86, "risk_band": "Tier A - Prime Senior Secured", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.96, "seniority_weight": 0.92, "asset_cover_multiplier": 1.0}, {"isin": "INF732E01110", "symbol": "BBETF31", "name": "Edelweiss BHARAT Bond ETF - April 2031", "category": "Debt ETF", "security_type": "Target Maturity ETF", "issuer": "Edelweiss Asset Management / Government of India", "rating": "CRISIL AAA", "rating_agency": "CRISIL", "seniority": "Senior Secured", "asset_cover_ratio": 1.4, "coupon_rate": 0.0, "coupon_frequency": "None (ETF)", "face_value": 1000.0, "issue_price": 1000.0, "issue_date": "2020-07-14", "maturity_date": "2031-04-15", "tenor_years": 10.75, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 7.42, "benchmark_index": "Nifty BHARAT Bond Index - April 2031", "expense_ratio": 0.0005, "tax_treatment": "Debt fund taxation as per income slab", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"target_maturity\": \"2031-04-15\", \"holdings\": [\"PFC\", \"REC\", \"PowerGrid\", \"IRFC\", \"NTPC\", \"NHPC\"]}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 4.4463, "effective_ytm": 7.37, "matched_sovereign_ytm": 7.128, "spread_over_gsec_bps": 24.2, "macaulay_duration": 4.0, "modified_duration": 3.725, "convexity": 17.349, "rate_shock_100bps_pct": -3.64, "risk_score": 11.7, "rays_score": 3.37, "risk_band": "Tier A - Prime Senior Secured", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.96, "seniority_weight": 0.92, "asset_cover_multiplier": 1.0}, {"isin": "IN0020220060", "symbol": "726GS2032", "name": "7.26% Government of India Sovereign Bond 2032", "category": "G-Sec", "security_type": "Government Bond", "issuer": "Government of India", "rating": "SOV", "rating_agency": "Government of India / RBI", "seniority": "Sovereign", "asset_cover_ratio": null, "coupon_rate": 7.26, "coupon_frequency": "Semi-Annual", "face_value": 100.0, "issue_price": 100.0, "issue_date": "2022-08-22", "maturity_date": "2032-08-22", "tenor_years": 10.0, "gold_grams": 0.0, "sovereign_guarantee": 1, "yield_to_maturity": 7.15, "benchmark_index": "G-Sec Benchmark", "expense_ratio": 0.0, "tax_treatment": "Interest taxable at slab rate", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"clearing_house\": \"CCIL\", \"highly_liquid\": true}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 5.8015, "effective_ytm": 7.26, "matched_sovereign_ytm": 7.15, "spread_over_gsec_bps": 11.0, "macaulay_duration": 4.969, "modified_duration": 4.795, "convexity": 28.115, "rate_shock_100bps_pct": -4.65, "risk_score": 2.0, "rays_score": 3.32, "risk_band": "Sovereign Safe Haven", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 1.0, "seniority_weight": 1.0, "asset_cover_multiplier": 1.0}, {"isin": "IN0020230085", "symbol": "718GS2033", "name": "7.18% Government of India Sovereign Bond 2033", "category": "G-Sec", "security_type": "Government Bond", "issuer": "Government of India", "rating": "SOV", "rating_agency": "Government of India / RBI", "seniority": "Sovereign", "asset_cover_ratio": null, "coupon_rate": 7.18, "coupon_frequency": "Semi-Annual", "face_value": 100.0, "issue_price": 100.0, "issue_date": "2023-08-14", "maturity_date": "2033-08-14", "tenor_years": 10.0, "gold_grams": 0.0, "sovereign_guarantee": 1, "yield_to_maturity": 7.18, "benchmark_index": "10-Year Benchmark G-Sec Index", "expense_ratio": 0.0, "tax_treatment": "Interest taxable at slab; capital gains indexation/flat rules apply", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"clearing_house\": \"CCIL\", \"rbi_retail_direct_eligible\": true, \"call_put_option\": false}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 6.7789, "effective_ytm": 7.18, "matched_sovereign_ytm": 7.18, "spread_over_gsec_bps": 0.0, "macaulay_duration": 5.622, "modified_duration": 5.427, "convexity": 36.304, "rate_shock_100bps_pct": -5.25, "risk_score": 2.0, "rays_score": 3.08, "risk_band": "Sovereign Safe Haven", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 1.0, "seniority_weight": 1.0, "asset_cover_multiplier": 1.0}, {"isin": "INF732E01128", "symbol": "BBETF32", "name": "Edelweiss BHARAT Bond ETF - April 2032", "category": "Debt ETF", "security_type": "Target Maturity ETF", "issuer": "Edelweiss Asset Management / Government of India", "rating": "CRISIL AAA", "rating_agency": "CRISIL", "seniority": "Senior Secured", "asset_cover_ratio": 1.4, "coupon_rate": 0.0, "coupon_frequency": "None (ETF)", "face_value": 1000.0, "issue_price": 1000.0, "issue_date": "2021-12-03", "maturity_date": "2032-04-15", "tenor_years": 10.37, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 7.48, "benchmark_index": "Nifty BHARAT Bond Index - April 2032", "expense_ratio": 0.0005, "tax_treatment": "Debt fund taxation as per income slab", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"target_maturity\": \"2032-04-15\", \"holdings\": [\"PFC\", \"REC\", \"PowerGrid\", \"IRFC\", \"SAIL\", \"GAIL\"]}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 5.4483, "effective_ytm": 7.43, "matched_sovereign_ytm": 7.144, "spread_over_gsec_bps": 28.6, "macaulay_duration": 5.0, "modified_duration": 4.654, "convexity": 25.994, "rate_shock_100bps_pct": -4.52, "risk_score": 11.7, "rays_score": 3.04, "risk_band": "Tier A - Prime Senior Secured", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.96, "seniority_weight": 0.92, "asset_cover_multiplier": 1.0}, {"isin": "IN0020240019", "symbol": "710GS2034", "name": "7.10% Government of India Sovereign Bond 2034", "category": "G-Sec", "security_type": "Government Bond", "issuer": "Government of India", "rating": "SOV", "rating_agency": "Government of India / RBI", "seniority": "Sovereign", "asset_cover_ratio": null, "coupon_rate": 7.1, "coupon_frequency": "Semi-Annual", "face_value": 100.0, "issue_price": 100.0, "issue_date": "2024-04-08", "maturity_date": "2034-04-08", "tenor_years": 10.0, "gold_grams": 0.0, "sovereign_guarantee": 1, "yield_to_maturity": 7.1, "benchmark_index": "10-Year Benchmark G-Sec Index", "expense_ratio": 0.0, "tax_treatment": "Interest taxable at slab rate", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"clearing_house\": \"CCIL\", \"rbi_retail_direct_eligible\": true, \"on_the_run\": true}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 7.4278, "effective_ytm": 7.1, "matched_sovereign_ytm": 7.1, "spread_over_gsec_bps": 0.0, "macaulay_duration": 5.942, "modified_duration": 5.738, "convexity": 40.74, "rate_shock_100bps_pct": -5.53, "risk_score": 2.0, "rays_score": 2.96, "risk_band": "Sovereign Safe Haven", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 1.0, "seniority_weight": 1.0, "asset_cover_multiplier": 1.0}, {"isin": "IN0020200270", "symbol": "664GS2035", "name": "6.64% Government of India Sovereign Bond 2035", "category": "G-Sec", "security_type": "Government Bond", "issuer": "Government of India", "rating": "SOV", "rating_agency": "Government of India / RBI", "seniority": "Sovereign", "asset_cover_ratio": null, "coupon_rate": 6.64, "coupon_frequency": "Semi-Annual", "face_value": 100.0, "issue_price": 100.0, "issue_date": "2020-06-16", "maturity_date": "2035-06-16", "tenor_years": 15.0, "gold_grams": 0.0, "sovereign_guarantee": 1, "yield_to_maturity": 7.22, "benchmark_index": "15-Year G-Sec Curve", "expense_ratio": 0.0, "tax_treatment": "Interest taxable at slab rate", "risk_tier": "Manageable Risk - Low", "metadata_json": "{\"duration_type\": \"Long Term\"}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 8.616, "effective_ytm": 6.64, "matched_sovereign_ytm": 7.22, "spread_over_gsec_bps": -58.0, "macaulay_duration": 6.63, "modified_duration": 6.417, "convexity": 51.05, "rate_shock_100bps_pct": -6.16, "risk_score": 2.0, "rays_score": 2.62, "risk_band": "Sovereign Safe Haven", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 1.0, "seniority_weight": 1.0, "asset_cover_multiplier": 1.0}, {"isin": "INE062A08231", "symbol": "SBIN_TIER2_34", "name": "State Bank of India 7.72% Tier-II Subordinated Unsecured Bond 2034", "category": "Corporate NCD", "security_type": "Non-Convertible Debenture", "issuer": "State Bank of India", "rating": "CRISIL AAA", "rating_agency": "CRISIL / ICRA", "seniority": "Unsecured Subordinated", "asset_cover_ratio": 1.0, "coupon_rate": 7.72, "coupon_frequency": "Annual", "face_value": 10000.0, "issue_price": 10000.0, "issue_date": "2024-09-09", "maturity_date": "2034-09-09", "tenor_years": 10.0, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 7.72, "benchmark_index": "CRISIL Tier-II Bond Index", "expense_ratio": 0.0, "tax_treatment": "Interest taxable at slab rate", "risk_tier": "Manageable Risk - Moderate", "metadata_json": "{\"basel_iii_compliant\": true, \"loss_absorption_clause\": true, \"call_option_year\": 2029}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 7.8494, "effective_ytm": 7.72, "matched_sovereign_ytm": 7.143, "spread_over_gsec_bps": 57.7, "macaulay_duration": 6.257, "modified_duration": 5.808, "convexity": 44.342, "rate_shock_100bps_pct": -5.59, "risk_score": 49.6, "rays_score": 1.61, "risk_band": "Tier B - High-Yield Secured", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.96, "seniority_weight": 0.75, "asset_cover_multiplier": 0.7}, {"isin": "INE929O07010", "symbol": "SPANDANA26", "name": "Spandana Sphoorty Financial 10.75% Unsecured Subordinated NCD 2026", "category": "Corporate NCD", "security_type": "Non-Convertible Debenture", "issuer": "Spandana Sphoorty Financial Ltd", "rating": "ICRA A", "rating_agency": "ICRA", "seniority": "Unsecured Subordinated", "asset_cover_ratio": 0.0, "coupon_rate": 10.75, "coupon_frequency": "Annual", "face_value": 1000.0, "issue_price": 1000.0, "issue_date": "2023-08-20", "maturity_date": "2026-08-20", "tenor_years": 3.0, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 11.5, "benchmark_index": "MFI Subordinated Debt Index", "expense_ratio": 0.0, "tax_treatment": "Interest taxable at slab rate", "risk_tier": "High Risk - Speculative", "metadata_json": "{\"sector\": \"Microfinance\", \"subordinated_debt\": true}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 0.05, "effective_ytm": 10.75, "matched_sovereign_ytm": 6.75, "spread_over_gsec_bps": 400.0, "macaulay_duration": 1.0, "modified_duration": 0.903, "convexity": 1.631, "rate_shock_100bps_pct": -0.89, "risk_score": 86.5, "rays_score": 1.53, "risk_band": "Tier C - Subordinated / Elevated Risk", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.45, "seniority_weight": 0.75, "asset_cover_multiplier": 0.4}, {"isin": "INE522D08021", "symbol": "YESBANK_TIER2_27", "name": "Yes Bank Ltd 9.50% Subordinated Tier-II Unsecured Bond 2027", "category": "Corporate NCD", "security_type": "Non-Convertible Debenture", "issuer": "Yes Bank Ltd", "rating": "CARE A-", "rating_agency": "CARE", "seniority": "Unsecured Subordinated", "asset_cover_ratio": 0.0, "coupon_rate": 9.5, "coupon_frequency": "Annual", "face_value": 10000.0, "issue_price": 10000.0, "issue_date": "2017-12-15", "maturity_date": "2027-12-15", "tenor_years": 10.0, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 11.2, "benchmark_index": "Subordinated Debt Index", "expense_ratio": 0.0, "tax_treatment": "Interest taxable at slab rate", "risk_tier": "High Risk - Speculative", "metadata_json": "{\"subordination\": \"Subordinate to all senior depositors and creditors\", \"write_down_risk\": \"High\"}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 1.1143, "effective_ytm": 9.5, "matched_sovereign_ytm": 7.05, "spread_over_gsec_bps": 245.0, "macaulay_duration": 1.0, "modified_duration": 0.913, "convexity": 1.668, "rate_shock_100bps_pct": -0.9, "risk_score": 85.0, "rays_score": 1.49, "risk_band": "Tier C - Subordinated / Elevated Risk", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.5, "seniority_weight": 0.75, "asset_cover_multiplier": 0.4}, {"isin": "INE608A07248", "symbol": "RELCAP_DEF", "name": "Reliance Capital 9.00% Unsecured NCD (Insolvency Default Benchmark)", "category": "Corporate NCD", "security_type": "Non-Convertible Debenture", "issuer": "Reliance Capital Ltd", "rating": "CARE D", "rating_agency": "CARE", "seniority": "Unsecured Subordinated", "asset_cover_ratio": 0.0, "coupon_rate": 9.0, "coupon_frequency": "Annual", "face_value": 1000.0, "issue_price": 1000.0, "issue_date": "2015-05-30", "maturity_date": "2025-05-30", "tenor_years": 10.0, "gold_grams": 0.0, "sovereign_guarantee": 0, "yield_to_maturity": 0.0, "benchmark_index": "Defaulted Debt Index", "expense_ratio": 0.0, "tax_treatment": "Capital loss / haircut resolution", "risk_tier": "High Risk - Defaulted", "metadata_json": "{\"status\": \"NCLT Insolvency Resolution / Resolution Applicant Hinduja\", \"negative_test_case\": true}", "created_at": "2026-11-03T09:48:25.907278+00:00", "current_price": null, "traded_volume": 0, "last_traded_date": null, "years_to_maturity": 0.05, "effective_ytm": 9.0, "matched_sovereign_ytm": 6.75, "spread_over_gsec_bps": 225.0, "macaulay_duration": 1.0, "modified_duration": 0.917, "convexity": 1.683, "rate_shock_100bps_pct": -0.91, "risk_score": 86.5, "rays_score": 1.27, "risk_band": "Tier C - Subordinated / Elevated Risk", "is_yield_trap": false, "distress_reasons": [], "rating_weight": 0.45, "seniority_weight": 0.75, "asset_cover_multiplier": 0.4}], "gold_24k_inr": 7850.0, "data_source": "OFFLINE_EMBEDDED_DB", "sovereign_curve": [[0.05, 6.95], [0.05, 6.85], [0.05, 6.75], [1.4346, 7.08], [5.8015, 7.15], [6.7789, 7.18], [7.4278, 7.1], [8.616, 7.22]], "summary": {"total_securities": 37, "by_category": {"Corporate NCD": 17, "Debt ETF": 6, "G-Sec": 5, "SGB": 6, "T-Bill": 3}, "by_seniority": {"Secured": 4, "Senior Secured": 14, "Sovereign": 15, "Unsecured Subordinated": 4}, "by_risk_tier": {"High Risk - Defaulted": 1, "High Risk - Speculative": 2, "Manageable Risk - Low": 27, "Manageable Risk - Moderate": 7}, "sovereign_guaranteed_count": 15, "avg_coupon_rate": 5.12, "avg_yield_to_maturity": 7.0, "earliest_maturity": 2024.0, "latest_maturity": 2035.0}, "last_sync_utc": "2026-11-03T09:48:26.556509+00:00"};
+    let globalState = {
+      securities: INITIAL_PAYLOAD.securities || [],
+      goldSpot: INITIAL_PAYLOAD.gold_24k_inr || 7850.0,
+      sovereignCurve: INITIAL_PAYLOAD.sovereign_curve || [],
+      dataSource: INITIAL_PAYLOAD.data_source || "OFFLINE_EMBEDDED_DB",
+      selectedIsins: new Set(),
+      sortCol: "rays_score",
+      sortAsc: false,
+    };
+
+    // Initialize selected ISINs
+    globalState.securities.forEach(s => {
+      if (!s.is_yield_trap) globalState.selectedIsins.add(s.isin);
+    });
+
+    // Rating ranking weights
+    const RATING_WEIGHTS = {
+      "SOV": 1.00, "AAA": 0.96, "AA+": 0.88, "AA": 0.80, "AA-": 0.68,
+      "A+": 0.55, "A": 0.45, "BBB": 0.30, "UNRATED / LIQUID": 0.50, "D": 0.00
+    };
+    const RATING_ORDINAL = {
+      "SOV": 100, "AAA": 90, "AA+": 85, "AA": 80, "AA-": 75,
+      "A+": 65, "A": 60, "BBB": 40, "D": 0
+    };
+
+    // On Load
+    window.addEventListener("DOMContentLoaded", () => {
+      updateSourceBadge();
+      updateKpis();
+      runFilter();
+    });
+
+    function updateSourceBadge() {
+      const b = document.getElementById("badge-source");
+      if (globalState.dataSource === "LIVE_FREE_API") {
+        b.className = "badge badge-live";
+        b.innerText = "● LIVE FREE API";
+      } else {
+        b.className = "badge badge-offline";
+        b.innerText = "● OFFLINE EMBEDDED DB";
+      }
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute("data-theme");
+      html.setAttribute("data-theme", current === "dark" ? "light" : "dark");
+      renderFrontierChart(currentFilteredSecurities);
+      renderCurveChart(currentFilteredSecurities);
+      renderLadderChart();
+    }
+
+    function resetSafePreset() {
+      document.getElementById("cat-gsec").checked = true;
+      document.getElementById("cat-tbill").checked = true;
+      document.getElementById("cat-sgb").checked = true;
+      document.getElementById("cat-ncd").checked = true;
+      document.getElementById("cat-etf").checked = true;
+
+      document.getElementById("sen-sov").checked = true;
+      document.getElementById("sen-sr").checked = true;
+      document.getElementById("sen-sec").checked = false;
+      document.getElementById("sen-unsec").checked = false;
+
+      document.getElementById("select-rating").value = "AA";
+      document.getElementById("slide-min-ytm").value = "6.5";
+      document.getElementById("slide-max-dur").value = "6.5";
+      document.getElementById("slide-min-cover").value = "1.25";
+      document.getElementById("check-guardrail").checked = true;
+
+      updateSliderLabels();
+      runFilter();
+    }
+
+    function updateSliderLabels() {
+      document.getElementById("val-min-ytm").innerText = parseFloat(document.getElementById("slide-min-ytm").value).toFixed(2) + "%";
+      document.getElementById("val-max-dur").innerText = parseFloat(document.getElementById("slide-max-dur").value).toFixed(1) + " yrs";
+      document.getElementById("val-min-cover").innerText = parseFloat(document.getElementById("slide-min-cover").value).toFixed(2) + "x";
+      document.getElementById("val-gold-cagr").innerText = parseFloat(document.getElementById("slide-gold-cagr").value).toFixed(2) + "%";
+    }
+
+    let currentFilteredSecurities = [];
+
+    // Client-side filtering & dynamic RAYS computation
+    function runFilter() {
+      const allowedCats = new Set();
+      if (document.getElementById("cat-gsec").checked) allowedCats.add("G-Sec");
+      if (document.getElementById("cat-tbill").checked) allowedCats.add("T-Bill");
+      if (document.getElementById("cat-sgb").checked) allowedCats.add("SGB");
+      if (document.getElementById("cat-ncd").checked) allowedCats.add("Corporate NCD");
+      if (document.getElementById("cat-etf").checked) allowedCats.add("Debt ETF");
+
+      const allowedSen = new Set();
+      if (document.getElementById("sen-sov").checked) allowedSen.add("sovereign");
+      if (document.getElementById("sen-sr").checked) allowedSen.add("senior secured");
+      if (document.getElementById("sen-sec").checked) allowedSen.add("secured");
+      if (document.getElementById("sen-unsec").checked) allowedSen.add("unsecured");
+
+      const minRatingTier = document.getElementById("select-rating").value;
+      const minRatingScore = RATING_ORDINAL[minRatingTier] || 0;
+      const minYtm = parseFloat(document.getElementById("slide-min-ytm").value);
+      const maxDur = parseFloat(document.getElementById("slide-max-dur").value);
+      const minCover = parseFloat(document.getElementById("slide-min-cover").value);
+      const goldCagr = parseFloat(document.getElementById("slide-gold-cagr").value);
+      const guardrail = document.getElementById("check-guardrail").checked;
+      const search = (document.getElementById("table-search").value || "").toLowerCase().trim();
+
+      currentFilteredSecurities = globalState.securities.filter(s => {
+        // Category
+        if (!allowedCats.has(s.category)) return false;
+
+        // Seniority
+        const senLower = (s.seniority || "").toLowerCase();
+        let matchSen = false;
+        if (allowedSen.has("sovereign") && (senLower.includes("sovereign") || s.sovereign_guarantee)) matchSen = true;
+        if (allowedSen.has("senior secured") && senLower.includes("senior secured")) matchSen = true;
+        if (allowedSen.has("secured") && !senLower.includes("senior") && senLower.includes("secured")) matchSen = true;
+        if (allowedSen.has("unsecured") && (senLower.includes("unsecured") || senLower.includes("tier-ii"))) matchSen = true;
+        if (!matchSen) return false;
+
+        // Guardrail
+        if (guardrail && s.is_yield_trap) return false;
+
+        // Rating
+        if (minRatingTier !== "ALL") {
+          const cleanRating = extractRating(s.rating);
+          const score = RATING_ORDINAL[cleanRating] || 0;
+          if (score < minRatingScore) return false;
+        }
+
+        // Dynamic SGB YTM update with slider Gold CAGR
+        let effectiveYtm = s.effective_ytm;
+        if (s.category === "SGB") {
+          const couponYield = (2.50 * (s.face_value || 6263) / (s.current_price || s.face_value));
+          const pull = ((globalState.goldSpot - (s.current_price || s.face_value)) / (s.current_price || s.face_value)) / Math.max(0.5, s.years_to_maturity);
+          effectiveYtm = couponYield + pull * 100 + goldCagr;
+        }
+
+        if (effectiveYtm < minYtm) return false;
+        if ((s.modified_duration || 1.0) > maxDur) return false;
+
+        // Asset cover (only for corporate NCDs)
+        if (s.category === "Corporate NCD") {
+          const cov = s.asset_cover_ratio || s.asset_cover || 1.0;
+          if (cov < minCover) return false;
+        }
+
+        // Search text
+        if (search) {
+          const txt = (s.symbol + " " + s.isin + " " + (s.issuer || "") + " " + (s.name || "")).toLowerCase();
+          if (!txt.includes(search)) return false;
+        }
+
+        return true;
+      });
+
+      // Sort
+      currentFilteredSecurities.sort((a, b) => {
+        let v1 = a[globalState.sortCol];
+        let v2 = b[globalState.sortCol];
+        if (typeof v1 === "string") return globalState.sortAsc ? v1.localeCompare(v2) : v2.localeCompare(v1);
+        v1 = v1 || 0; v2 = v2 || 0;
+        return globalState.sortAsc ? v1 - v2 : v2 - v1;
+      });
+
+      renderTable(currentFilteredSecurities);
+      renderFrontierChart(currentFilteredSecurities);
+      renderCurveChart(currentFilteredSecurities);
+      updateKpis();
+      computeLadder();
+    }
+
+    function extractRating(r) {
+      if (!r) return "UNRATED";
+      const u = r.toUpperCase();
+      if (u.includes("SOV")) return "SOV";
+      if (u.includes("AAA")) return "AAA";
+      if (u.includes("AA+")) return "AA+";
+      if (u.includes("AA-")) return "AA-";
+      if (u.includes("AA")) return "AA";
+      if (u.includes("A+")) return "A+";
+      if (u.includes("A")) return "A";
+      if (u.includes("BBB")) return "BBB";
+      if (u.includes("D") || u.includes("DEFAULT")) return "D";
+      return "UNRATED";
+    }
+
+    // Render Table
+    function renderTable(securities) {
+      const tbody = document.getElementById("bonds-tbody");
+      document.getElementById("screened-count").innerText = `Showing ${securities.length} of ${globalState.securities.length} securities`;
+      tbody.innerHTML = "";
+
+      securities.forEach(s => {
+        const tr = document.createElement("tr");
+        const checked = globalState.selectedIsins.has(s.isin) ? "checked" : "";
+        const isTrap = s.is_yield_trap;
+        const price = s.current_price || s.clean_price || s.face_value || 1000.0;
+        const spread = s.spread_over_gsec_bps !== undefined ? s.spread_over_gsec_bps : "+0";
+        const cover = s.asset_cover_ratio || s.asset_cover ? (s.asset_cover_ratio || s.asset_cover).toFixed(2) + "x" : "N/A (Sov)";
+
+        let senBadge = "badge-live";
+        if ((s.seniority || "").toLowerCase().includes("unsecured")) senBadge = "badge-guard";
+        else if ((s.seniority || "").toLowerCase().includes("sovereign")) senBadge = "badge-offline";
+
+        tr.innerHTML = `
+          <td><input type="checkbox" ${checked} onchange="toggleSelectBond('${s.isin}')"></td>
+          <td class="col-text" style="font-weight: 700;">${s.symbol}<br><span style="font-size: 10px; color: var(--text-dim);">${s.isin}</span></td>
+          <td class="col-text">${s.issuer || s.name || s.symbol}</td>
+          <td>${s.category}</td>
+          <td><span class="badge ${senBadge}">${s.seniority}</span></td>
+          <td style="font-weight: 700;">${s.rating}</td>
+          <td>₹${price.toFixed(2)}</td>
+          <td style="font-weight: 700; color: var(--accent-green);">${s.effective_ytm.toFixed(2)}%</td>
+          <td>${spread >= 0 ? "+" + spread : spread}</td>
+          <td>${(s.modified_duration || 0).toFixed(2)}</td>
+          <td>${cover}</td>
+          <td>
+            ${isTrap
+              ? '<span class="badge badge-guard" title="Yield Trap / Distressed">⚠️ Trap</span>'
+              : '<span class="badge badge-live">' + (s.risk_band || 'Safe') + '</span>'}
+          </td>
+          <td style="font-weight: 700; color: var(--accent-blue);">${(s.rays_score || 0).toFixed(2)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function toggleSelectBond(isin) {
+      if (globalState.selectedIsins.has(isin)) globalState.selectedIsins.delete(isin);
+      else globalState.selectedIsins.add(isin);
+      computeLadder();
+    }
+
+    function toggleSelectAll(select) {
+      currentFilteredSecurities.forEach(s => {
+        if (select) globalState.selectedIsins.add(s.isin);
+        else globalState.selectedIsins.delete(s.isin);
+      });
+      renderTable(currentFilteredSecurities);
+      computeLadder();
+    }
+
+    function sortTable(col) {
+      if (globalState.sortCol === col) globalState.sortAsc = !globalState.sortAsc;
+      else { globalState.sortCol = col; globalState.sortAsc = false; }
+      runFilter();
+    }
+
+    // Update Executive KPIs
+    function updateKpis() {
+      document.getElementById("kpi-gold-spot").innerText = "₹" + globalState.goldSpot.toLocaleString("en-IN", {minimumFractionDigits: 2});
+      if (currentFilteredSecurities.length > 0) {
+        const top = currentFilteredSecurities[0];
+        document.getElementById("kpi-top-pick").innerText = `${top.symbol} (${top.effective_ytm.toFixed(2)}%)`;
+        document.getElementById("kpi-top-pick-sub").innerText = `RAYS: ${top.rays_score.toFixed(2)} | ${top.seniority}`;
+
+        const avgYtm = currentFilteredSecurities.reduce((a, b) => a + b.effective_ytm, 0) / currentFilteredSecurities.length;
+        const avgSpread = currentFilteredSecurities.reduce((a, b) => a + (b.spread_over_gsec_bps || 0), 0) / currentFilteredSecurities.length;
+        document.getElementById("kpi-screened-ytm").innerText = avgYtm.toFixed(2) + "%";
+        document.getElementById("kpi-screened-spread").innerText = `${avgSpread >= 0 ? "+" : ""}${avgSpread.toFixed(0)} bps vs G-Sec`;
+      }
+    }
+
+    // ------------------------------------------------------------------------
+    // SVG Chart 1: Debt Efficient Frontier
+    // ------------------------------------------------------------------------
+    function renderFrontierChart(securities) {
+      const svg = document.getElementById("svg-frontier");
+      svg.innerHTML = "";
+      if (!securities || securities.length === 0) return;
+
+      const w = 500, h = 250, padL = 40, padR = 20, padT = 20, padB = 30;
+      const plotW = w - padL - padR;
+      const plotH = h - padT - padB;
+
+      // X: Risk score 0 to 100, Y: YTM 0 to 15%
+      const maxY = Math.max(12.0, ...securities.map(s => s.effective_ytm)) + 1.0;
+
+      // Axes gridlines
+      for (let yVal = 0; yVal <= maxY; yVal += 3) {
+        const y = padT + plotH - (yVal / maxY) * plotH;
+        svg.innerHTML += `<line x1="${padL}" y1="${y}" x2="${w - padR}" y2="${y}" stroke="var(--border)" stroke-width="1" stroke-dasharray="2,2"/>`;
+        svg.innerHTML += `<text x="${padL - 6}" y="${y + 4}" fill="var(--text-dim)" font-size="9" text-anchor="end">${yVal.toFixed(0)}%</text>`;
+      }
+
+      // Sovereign Benchmark Floor Line (7.18%)
+      const gsecY = padT + plotH - (7.18 / maxY) * plotH;
+      svg.innerHTML += `<line x1="${padL}" y1="${gsecY}" x2="${w - padR}" y2="${gsecY}" stroke="var(--accent-blue)" stroke-width="1.5" stroke-dasharray="4,4"/>`;
+      svg.innerHTML += `<text x="${w - padR - 4}" y="${gsecY - 4}" fill="var(--accent-blue)" font-size="9" text-anchor="end">10Y G-Sec Floor (7.18%)</text>`;
+
+      // Points
+      securities.forEach(s => {
+        const x = padL + (Math.min(100, s.risk_score || 10) / 100.0) * plotW;
+        const y = padT + plotH - (Math.min(maxY, s.effective_ytm) / maxY) * plotH;
+
+        let col = "var(--accent-green)";
+        if (s.is_yield_trap) col = "var(--accent-rose)";
+        else if (s.category === "G-Sec" || s.category === "T-Bill" || s.category === "SGB") col = "var(--accent-blue)";
+        else if ((s.seniority || "").toLowerCase().includes("senior")) col = "var(--accent-green)";
+        else col = "var(--accent-amber)";
+
+        svg.innerHTML += `<circle cx="${x}" cy="${y}" r="5" fill="${col}" stroke="#ffffff" stroke-width="1" style="cursor: pointer;"
+          onmouseover="showTip(evt, '${s.symbol} | YTM: ${s.effective_ytm.toFixed(2)}% | Risk: ${s.risk_score || 0} | RAYS: ${s.rays_score.toFixed(2)}')"
+          onmouseout="hideTip()"/>`;
+      });
+
+      // X-Axis Label
+      svg.innerHTML += `<text x="${padL + plotW / 2}" y="${h - 5}" fill="var(--text-dim)" font-size="10" text-anchor="middle">Composite Risk Score (0 = Safest, 100 = Distressed)</text>`;
+    }
+
+    // ------------------------------------------------------------------------
+    // SVG Chart 2: Sovereign Curve & Credit Spreads
+    // ------------------------------------------------------------------------
+    function renderCurveChart(securities) {
+      const svg = document.getElementById("svg-curve");
+      svg.innerHTML = "";
+      const w = 500, h = 250, padL = 40, padR = 20, padT = 20, padB = 30;
+      const plotW = w - padL - padR;
+      const plotH = h - padT - padB;
+
+      const maxT = 12.0;
+      const maxY = Math.max(12.0, ...securities.map(s => s.effective_ytm)) + 1.0;
+
+      // Draw Sovereign curve points
+      const curve = globalState.sovereignCurve || [(0.25, 6.75), (1.0, 6.95), (5.0, 7.08), (10.0, 7.18)];
+      let pathD = "";
+      curve.forEach((pt, idx) => {
+        const t = pt[0], ytm = pt[1];
+        const x = padL + (t / maxT) * plotW;
+        const y = padT + plotH - (ytm / maxY) * plotH;
+        pathD += (idx === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`);
+      });
+
+      svg.innerHTML += `<path d="${pathD}" fill="none" stroke="var(--accent-blue)" stroke-width="2.5"/>`;
+
+      // Plot bond points
+      securities.forEach(s => {
+        const t = Math.min(maxT, s.years_to_maturity || 5.0);
+        const x = padL + (t / maxT) * plotW;
+        const y = padT + plotH - (Math.min(maxY, s.effective_ytm) / maxY) * plotH;
+        const col = s.category.includes("Sec") ? "var(--accent-blue)" : "var(--accent-green)";
+
+        svg.innerHTML += `<circle cx="${x}" cy="${y}" r="4" fill="${col}" opacity="0.85" style="cursor: pointer;"
+          onmouseover="showTip(evt, '${s.symbol} (${t.toFixed(1)}y) | YTM: ${s.effective_ytm.toFixed(2)}% | Spread: ${s.spread_over_gsec_bps || 0} bps')"
+          onmouseout="hideTip()"/>`;
+      });
+
+      svg.innerHTML += `<text x="${padL + plotW / 2}" y="${h - 5}" fill="var(--text-dim)" font-size="10" text-anchor="middle">Maturity Horizon (Years)</text>`;
+    }
+
+    // ------------------------------------------------------------------------
+    // Portfolio Ladder Simulation & SVG Bar Chart
+    // ------------------------------------------------------------------------
+    function computeLadder() {
+      const totalCap = parseFloat(document.getElementById("ladder-capital").value) || 500000;
+      const mode = document.getElementById("ladder-mode").value;
+
+      // Pick selected bonds from current filtered set
+      const selected = currentFilteredSecurities.filter(s => globalState.selectedIsins.has(s.isin));
+      const tbody = document.getElementById("ladder-allocations-tbody");
+      tbody.innerHTML = "";
+
+      if (selected.length === 0) {
+        document.getElementById("ladder-weighted-ytm").innerText = "0.00%";
+        document.getElementById("ladder-weighted-dur").innerText = "0.0 yrs";
+        document.getElementById("ladder-sov-pct").innerText = "0%";
+        document.getElementById("ladder-coupon-inflow").innerText = "₹0.00";
+        renderLadderBars({});
+        return;
+      }
+
+      // Compute weights
+      let weights = [];
+      if (mode === "rays_weighted") {
+        const rawW = selected.map(s => Math.max(0.1, s.rays_score || 1.0));
+        const sumW = rawW.reduce((a, b) => a + b, 0);
+        weights = rawW.map(w => w / sumW);
+      } else {
+        weights = selected.map(() => 1.0 / selected.length);
+      }
+
+      let weightedYtm = 0;
+      let weightedDur = 0;
+      let sovSrCap = 0;
+      let totalAnnualCoupon = 0;
+      const monthlySchedule = {};
+      for (let m = 1; m <= 12; m++) monthlySchedule[`month_${m}`] = { coupon: 0, principal: 0, total: 0 };
+
+      selected.forEach((s, idx) => {
+        const w = weights[idx];
+        const cap = totalCap * w;
+        const price = s.current_price || s.clean_price || s.face_value || 1000.0;
+        const units = Math.max(1, Math.round(cap / price));
+        const deployed = units * price;
+
+        weightedYtm += s.effective_ytm * w;
+        weightedDur += (s.modified_duration || 2.0) * w;
+
+        const sen = (s.seniority || "").toLowerCase();
+        if (s.category === "G-Sec" || s.category === "T-Bill" || s.category === "SGB" || sen.includes("senior") || sen.includes("sovereign")) {
+          sovSrCap += deployed;
+        }
+
+        // Monthly coupon projection
+        const fv = s.face_value || 1000.0;
+        const annualCoupon = units * fv * ((s.coupon_rate || 0) / 100.0);
+        totalAnnualCoupon += annualCoupon;
+
+        const freq = (s.coupon_frequency || s.payment_frequency || "Annual").toLowerCase();
+        if (freq.includes("month")) {
+          for (let m = 1; m <= 12; m++) monthlySchedule[`month_${m}`].coupon += annualCoupon / 12;
+        } else if (freq.includes("semi")) {
+          monthlySchedule["month_6"].coupon += annualCoupon / 2;
+          monthlySchedule["month_12"].coupon += annualCoupon / 2;
+        } else if (freq.includes("quarter")) {
+          [3, 6, 9, 12].forEach(m => monthlySchedule[`month_${m}`].coupon += annualCoupon / 4);
+        } else if (!freq.includes("none") && s.coupon_rate > 0) {
+          monthlySchedule["month_12"].coupon += annualCoupon;
+        }
+
+        // Maturity within 12 months
+        if (s.years_to_maturity <= 1.0) {
+          const matM = Math.max(1, Math.min(12, Math.round(s.years_to_maturity * 12)));
+          monthlySchedule[`month_${matM}`].principal += units * fv;
+        }
+
+        // Add to allocation table
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="col-text" style="font-weight: 700;">${s.symbol}</td>
+          <td>${units}</td>
+          <td>₹${deployed.toLocaleString("en-IN", {minimumFractionDigits: 2})}</td>
+          <td>${(w * 100).toFixed(1)}%</td>
+          <td>${(s.coupon_rate || 0).toFixed(2)}%</td>
+          <td style="color: var(--accent-green); font-weight: 700;">${s.effective_ytm.toFixed(2)}%</td>
+          <td style="color: var(--accent-blue); font-weight: 700;">${(s.rays_score || 0).toFixed(2)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById("ladder-weighted-ytm").innerText = weightedYtm.toFixed(2) + "%";
+      document.getElementById("ladder-weighted-dur").innerText = weightedDur.toFixed(2) + " yrs";
+      document.getElementById("ladder-sov-pct").innerText = ((sovSrCap / totalCap) * 100).toFixed(0) + "%";
+      document.getElementById("ladder-coupon-inflow").innerText = "₹" + totalAnnualCoupon.toLocaleString("en-IN", {minimumFractionDigits: 2});
+
+      renderLadderBars(monthlySchedule);
+    }
+
+    function renderLadderBars(schedule) {
+      const svg = document.getElementById("svg-ladder-bars");
+      svg.innerHTML = "";
+      const w = 600, h = 160, padL = 40, padR = 20, padT = 15, padB = 25;
+      const plotW = w - padL - padR;
+      const plotH = h - padT - padB;
+
+      const totals = Object.keys(schedule).map(k => (schedule[k].coupon || 0) + (schedule[k].principal || 0));
+      const maxVal = Math.max(5000, ...totals) * 1.15;
+
+      const barWidth = (plotW / 12) * 0.65;
+      const step = plotW / 12;
+
+      for (let i = 1; i <= 12; i++) {
+        const k = `month_${i}`;
+        const cVal = schedule[k] ? schedule[k].coupon : 0;
+        const pVal = schedule[k] ? schedule[k].principal : 0;
+        const x = padL + (i - 1) * step + (step - barWidth) / 2;
+
+        const cHeight = (cVal / maxVal) * plotH;
+        const pHeight = (pVal / maxVal) * plotH;
+
+        const cY = padT + plotH - cHeight;
+        const pY = cY - pHeight;
+
+        // Coupon bar (Green)
+        if (cHeight > 0) {
+          svg.innerHTML += `<rect x="${x}" y="${cY}" width="${barWidth}" height="${cHeight}" fill="var(--accent-green)" rx="2"
+            onmouseover="showTip(evt, 'Month ${i}: Coupon ₹${cVal.toFixed(2)}')" onmouseout="hideTip()"/>`;
+        }
+        // Principal bar (Gold)
+        if (pHeight > 0) {
+          svg.innerHTML += `<rect x="${x}" y="${pY}" width="${barWidth}" height="${pHeight}" fill="var(--accent-gold)" rx="2"
+            onmouseover="showTip(evt, 'Month ${i}: Principal ₹${pVal.toFixed(2)}')" onmouseout="hideTip()"/>`;
+        }
+
+        // Month label
+        svg.innerHTML += `<text x="${x + barWidth / 2}" y="${h - 8}" fill="var(--text-dim)" font-size="9" text-anchor="middle">M${i}</text>`;
+      }
+    }
+
+    // Tooltip Helper
+    function showTip(evt, text) {
+      const tip = document.getElementById("tooltip");
+      tip.innerText = text;
+      tip.style.left = (evt.pageX + 10) + "px";
+      tip.style.top = (evt.pageY - 25) + "px";
+      tip.style.display = "block";
+    }
+    function hideTip() {
+      document.getElementById("tooltip").style.display = "none";
+    }
+
+    // Free API Sync Trigger
+    async function triggerSync() {
+      const btn = event.target;
+      const orig = btn.innerText;
+      btn.innerText = "⏳ Syncing...";
+      btn.disabled = true;
+
+      try {
+        const resp = await fetch("/api/sync", { method: "POST" });
+        if (resp.ok) {
+          const data = await resp.json();
+          globalState.securities = data.securities;
+          globalState.goldSpot = data.gold_24k_inr;
+          globalState.dataSource = data.data_source;
+          updateSourceBadge();
+          runFilter();
+          alert("Market data synchronized successfully!");
+        } else {
+          alert("API server unavailable (running in offline mode).");
+        }
+      } catch (e) {
+        alert("Running in zero-install offline mode (no local server active). Local data remains intact.");
+      } finally {
+        btn.innerText = orig;
+        btn.disabled = false;
+      }
+    }
+
+    // Bhavcopy Import Handlers
+    function openImportModal() {
+      document.getElementById("modal-import").style.display = "flex";
+    }
+    function closeImportModal() {
+      document.getElementById("modal-import").style.display = "none";
+    }
+    function handleFileUpload(evt) {
+      const file = evt.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        document.getElementById("csv-paste-area").value = e.target.result;
+      };
+      reader.readAsText(file);
+    }
+    async function submitBhavcopy() {
+      const raw = document.getElementById("csv-paste-area").value;
+      if (!raw.trim()) return;
+
+      try {
+        const resp = await fetch("/api/import-csv", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ csv_content: raw }),
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          globalState.securities = data.securities;
+          runFilter();
+          closeImportModal();
+          alert("Bhavcopy CSV ingested and quant engine re-calculated successfully!");
+        } else {
+          alert("Failed to submit Bhavcopy to local server.");
+        }
+      } catch (e) {
+        alert("Server not responding. Please run via 'python -m src.app_server' to enable dynamic CSV ingestion.");
+      }
+    }
+  </script>
+</body>
+</html>
